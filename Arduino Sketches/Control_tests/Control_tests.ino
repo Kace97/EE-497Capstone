@@ -13,10 +13,10 @@
 /*
  * motor control pins
  */
-int in1 = 8;
-int in2 = 9;
-int in3= 10;
-int in4 = 11;
+#define in1 8
+#define in2 9
+#define in3 10
+#define in4 11
 Servo EnA;
 Servo EnB;
 
@@ -49,8 +49,10 @@ void setup() {
 
   
   //attach interrupt
-  attachInterrupt(direc, toggle_direction, CHANGE);
-  attachInterrupt(on_off, toggle_on, CHANGE);
+  pinMode(direc, INPUT);
+  pinMode(on_off, INPUT);
+  attachInterrupt(digitalPinToInterrupt(direc), toggle_direction, CHANGE);
+  attachInterrupt(digitalPinToInterrupt(on_off), toggle_on, CHANGE);
   Serial.println("Setup Complete!");
 }
 
@@ -60,20 +62,24 @@ void loop() {
  if(on){
   EnA.write(PWM_speed);
   EnB.write(PWM_speed);
-  if(((millis() - lastTime) / 1000) < 1){
+  if(((millis() - lastTime) / 1000) > 1){
     Serial.println(PWM_speed);
+    lastTime = millis();
   }
  }
  else{
-  EnA.write(0);
-  EnB.write(0);
+  EnA.detach();
+  EnB.detach();
  }
 }
 
 void toggle_on(){
-  on ^= on;
-  Serial.println("on = ");
+  on = !on;
+  EnA.attach(5);
+  EnB.attach(6);
+  Serial.print("on = ");
   Serial.print(on);
+  Serial.println();
 }
 
 void toggle_direction(){
@@ -83,4 +89,6 @@ void toggle_direction(){
   //change direction of motB
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
+  Serial.println("changed direction");
+  delay(50);
 }
