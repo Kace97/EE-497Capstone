@@ -1,62 +1,122 @@
-#include <Stepper.h>
-#include <Wire.h>
-#include <Adafruit_Sensor.h>
-#include "Adafruit_TSL2591.h"
+#define STEPPER_FRONT_IN1 9
+#define STEPPER_FRONT_IN2 10
+#define STEPPER_FRONT_IN3 11
+#define STEPPER_FRONT_IN4 12
 
-#define STEPS_PER_MIN 2038 
+#define STEPPER_BACK_IN1 4
+#define STEPPER_BACK_IN2 5
+#define STEPPER_BACK_IN3 6
+#define STEPPER_BACK_IN4 7
 
-Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591);
-Stepper stepper(STEPS_PER_MIN, 8, 10, 9, 11);
-
-boolean onLine = false; 
-float currentLux = 0;
- 
+int stepNum = 0;
 void setup() {
-  Serial.begin(115200);
-  stepper.setSpeed(2);
-  configureSensor();
+  pinMode(STEPPER_FRONT_IN1, OUTPUT);
+  pinMode(STEPPER_FRONT_IN2, OUTPUT);
+  pinMode(STEPPER_FRONT_IN3, OUTPUT);
+  pinMode(STEPPER_FRONT_IN4, OUTPUT);
+  pinMode(STEPPER_BACK_IN1, OUTPUT);
+  pinMode(STEPPER_BACK_IN2, OUTPUT);
+  pinMode(STEPPER_BACK_IN3, OUTPUT);
+  pinMode(STEPPER_BACK_IN4, OUTPUT);
+
 }
 
 void loop() {
-  currentLux = getLux();
-  if (currentLux < 200) {
-    stepper.step(STEPS_PER_MIN/4); // do 2038 steps -- corresponds to one revolution in one minute
-  }
-  else {
-    Serial.println("Found a line");
-    delay(10000);
-    stepper.step(STEPS_PER_MIN/4);
-  }
-
-void configureSensor(void) {
-  tsl.setGain(TSL2591_GAIN_MED);   
-
-   tsl.setTiming(TSL2591_INTEGRATIONTIME_300MS);
-
-  tsl2591Gain_t gain = tsl.getGain();
-  switch(gain) {
-    case TSL2591_GAIN_LOW:
-      Serial.println(F("1x (Low)"));
-      break;
-    case TSL2591_GAIN_MED:
-      Serial.println(F("25x (Medium)"));
-      break;
-    case TSL2591_GAIN_HIGH:
-      Serial.println(F("428x (High)"));
-      break;
-    case TSL2591_GAIN_MAX:
-      Serial.println(F("9876x (Max)"));
-      break;
-  }
+  OneStep(false);
+  delay(10);
 }
 
-float getLux(void)
-{
 
-  uint32_t lum = tsl.getFullLuminosity();
-  uint16_t ir, full;
-  ir = lum >> 16;
-  full = lum & 0xFFFF;
-  newLux = tsl.calculateLux(full, ir);
-  return newLux;
+void OneStep(bool dir){
+  if(dir){
+    switch(stepNum){
+        case 0:
+          digitalWrite(STEPPER_FRONT_IN1, HIGH);
+          digitalWrite(STEPPER_FRONT_IN2, LOW);
+          digitalWrite(STEPPER_FRONT_IN3, LOW);
+          digitalWrite(STEPPER_FRONT_IN4, LOW);
+          digitalWrite(STEPPER_BACK_IN1, HIGH);
+          digitalWrite(STEPPER_BACK_IN2, LOW);
+          digitalWrite(STEPPER_BACK_IN3, LOW);
+          digitalWrite(STEPPER_BACK_IN4, LOW);
+          break;
+        case 1:
+          digitalWrite(STEPPER_FRONT_IN1, LOW);
+          digitalWrite(STEPPER_FRONT_IN2, HIGH);
+          digitalWrite(STEPPER_FRONT_IN3, LOW);
+          digitalWrite(STEPPER_FRONT_IN4, LOW);
+          digitalWrite(STEPPER_BACK_IN1, LOW);
+          digitalWrite(STEPPER_BACK_IN2, HIGH);
+          digitalWrite(STEPPER_BACK_IN3, LOW);
+          digitalWrite(STEPPER_BACK_IN4, LOW);
+          break;
+        case 2:
+          digitalWrite(STEPPER_FRONT_IN1, LOW);
+          digitalWrite(STEPPER_FRONT_IN2, LOW);
+          digitalWrite(STEPPER_FRONT_IN3, HIGH);
+          digitalWrite(STEPPER_FRONT_IN4, LOW);
+          digitalWrite(STEPPER_BACK_IN1, LOW);
+          digitalWrite(STEPPER_BACK_IN2, LOW);
+          digitalWrite(STEPPER_BACK_IN3, HIGH);
+          digitalWrite(STEPPER_BACK_IN4, LOW);
+          break;
+        case 3:
+          digitalWrite(STEPPER_FRONT_IN1, LOW);
+          digitalWrite(STEPPER_FRONT_IN2, LOW);
+          digitalWrite(STEPPER_FRONT_IN3, LOW);
+          digitalWrite(STEPPER_FRONT_IN4, HIGH);
+          digitalWrite(STEPPER_BACK_IN1, LOW);
+          digitalWrite(STEPPER_BACK_IN2, LOW);
+          digitalWrite(STEPPER_BACK_IN3, LOW);
+          digitalWrite(STEPPER_BACK_IN4, HIGH);
+          break;
+      } 
+  } else {
+      switch(stepNum){
+        case 0:
+          digitalWrite(STEPPER_FRONT_IN1, LOW);
+          digitalWrite(STEPPER_FRONT_IN2, LOW);
+          digitalWrite(STEPPER_FRONT_IN3, LOW);
+          digitalWrite(STEPPER_FRONT_IN4, HIGH);
+          digitalWrite(STEPPER_BACK_IN1, LOW);
+          digitalWrite(STEPPER_BACK_IN2, LOW);
+          digitalWrite(STEPPER_BACK_IN3, LOW);
+          digitalWrite(STEPPER_BACK_IN4, HIGH);
+          break;
+        case 1:
+          digitalWrite(STEPPER_FRONT_IN1, LOW);
+          digitalWrite(STEPPER_FRONT_IN2, LOW);
+          digitalWrite(STEPPER_FRONT_IN3, HIGH);
+          digitalWrite(STEPPER_FRONT_IN4, LOW);
+          digitalWrite(STEPPER_BACK_IN1, LOW);
+          digitalWrite(STEPPER_BACK_IN2, LOW);
+          digitalWrite(STEPPER_BACK_IN3, HIGH);
+          digitalWrite(STEPPER_BACK_IN4, LOW);
+          break;
+        case 2:
+          digitalWrite(STEPPER_FRONT_IN1, LOW);
+          digitalWrite(STEPPER_FRONT_IN2, HIGH);
+          digitalWrite(STEPPER_FRONT_IN3, LOW);
+          digitalWrite(STEPPER_FRONT_IN4, LOW);
+          digitalWrite(STEPPER_BACK_IN1, LOW);
+          digitalWrite(STEPPER_BACK_IN2, HIGH);
+          digitalWrite(STEPPER_BACK_IN3, LOW);
+          digitalWrite(STEPPER_BACK_IN4, LOW);
+          break;
+        case 3:
+          digitalWrite(STEPPER_FRONT_IN1, HIGH);
+          digitalWrite(STEPPER_FRONT_IN2, LOW);
+          digitalWrite(STEPPER_FRONT_IN3, LOW);
+          digitalWrite(STEPPER_FRONT_IN4, LOW);
+          digitalWrite(STEPPER_BACK_IN1, HIGH);
+          digitalWrite(STEPPER_BACK_IN2, LOW);
+          digitalWrite(STEPPER_BACK_IN3, LOW);
+          digitalWrite(STEPPER_BACK_IN4, LOW);
+          break;
+      } 
+  }
+  stepNum++;
+  if(stepNum > 3) {
+    stepNum = 0;
+  }
 }
