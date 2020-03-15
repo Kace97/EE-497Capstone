@@ -91,7 +91,7 @@ def segment_pills(original_img, save_folder, thresh_thresh=170, circle_thresh=12
 take_picture()
 plight = cv2.imread('rpi_photo.jpg')
 #cv2.imwrite('new.png', plight)
-segment_pills(plight, 'images', thresh_thresh=100, circle_thresh=8, num_pills=1)
+segment_pills(plight, 'images', thresh_thresh=120, circle_thresh=8, num_pills=1)
 
 
 
