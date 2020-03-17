@@ -12,8 +12,6 @@ def take_pictures(time_to_pause):
         print("Taking bright photo")
         time.sleep(time_to_pause)
         camera.capture('lit_photo.jpg')
-        
-
 
 class PillSegmenter:
     def __init__(self):
@@ -22,20 +20,23 @@ class PillSegmenter:
         self.save_folder ='images'
         self.thresh_thresh = 120
         self.circle_thresh = 11
+        self.debug_mode = True
             
     def threshold_image(self, high=255):
         img = cv2.cvtColor(self.original_image, cv2.COLOR_BGR2GRAY) # better in grayscale
         ret, thresh = cv2.threshold(img, self.thresh_thresh, high, 0)
-        cv2.imwrite(self.save_folder + 'thresh.jpg', thresh)
+        if self.debug_mode:
+            cv2.imwrite(self.save_folder + 'thresh.jpg', thresh)
         return thresh
 
 
     def do_contours(self, thresh):
         contours = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2]
         contour_sorted = sorted(contours, key=cv2.contourArea)
-        new_img = self.original_image.copy()
-        cv2.drawContours(new_img, contour_sorted, -1, (0, 255, 0))
-        cv2.imwrite(self.save_folder+'/contours.jpg', new_img)
+        if self.debug_mode:
+            new_img = self.original_image.copy()
+            cv2.drawContours(new_img, contour_sorted, -1, (0, 255, 0))
+            cv2.imwrite(self.save_folder+'/contours.jpg', new_img)
         return contour_sorted
 
 
@@ -46,10 +47,11 @@ class PillSegmenter:
             area = cv2.contourArea(contour)
             if ((len(approx) > self.circle_thresh) & (area > 30) & (area < 50000) ):
                 contour_list.append(contour)
-
-        new_img2 = self.original_image.copy()
-        cv2.drawContours(new_img2, contour_list, -1, (0, 255, 0))
-        cv2.imwrite(self.save_folder+'/circle_contours.jpg', new_img2)
+                
+        if self.debug_mode:
+            new_img2 = self.original_image.copy()
+            cv2.drawContours(new_img2, contour_list, -1, (0, 255, 0))
+            cv2.imwrite(self.save_folder+'/circle_contours.jpg', new_img2)
 
         circles_sorted = sorted(contour_list, key=cv2.contourArea)
         return circles_sorted
@@ -59,13 +61,14 @@ class PillSegmenter:
         i = 0
 
         while cv2.contourArea(circles_sorted[index-i]) > 10000:
-            cv2.drawContours(new_img3, circles_sorted, index-i, (0, 255, 0))
-            cv2.imwrite(self.save_folder+'/biggest_contour' + str(i) +'.jpg', new_img3)
-
             x, y, w, h = self.get_bounding_rect(circles_sorted[index-i])
             cropped = self.original_image.copy()[y:y+h, x:x+w]
             lit_cropped = self.bright_image.copy()[y:y+h, x:x+w]
-            cv2.imwrite(self.save_folder+'/cropped_pill' + str(i) + '.jpg', cropped)
+            
+            if self.debug_mode:
+                cv2.drawContours(new_img3, circles_sorted, index-i, (0, 255, 0))
+                cv2.imwrite(self.save_folder+'/biggest_contour' + str(i) +'.jpg', new_img3)
+                cv2.imwrite(self.save_folder+'/cropped_pill' + str(i) + '.jpg', cropped)
 
             self.crop_circle(cropped, i, lit_cropped)
             i += 1
@@ -107,7 +110,8 @@ class PillSegmenter:
             cv2.imwrite(self.save_folder + '/qr_code.jpg', qr_img)
             
 
-    def segment_pills(self):
+    def segment_pills(self, debug_mode=True):
+        self.debug_mode=debug_mode
         print("Processing images")
         cv2.imwrite(self.save_folder+'/original_image.jpg', self.original_image)
         self.bright_image = self.original_image # DELETE THIS
@@ -118,6 +122,7 @@ class PillSegmenter:
         index = len(circles_sorted) - 1
         num_pills = self.draw_n_contours(circles_sorted, index)
         print("Found %i pill(s)" %num_pills)
+        return num_pills
 
 
 

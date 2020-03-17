@@ -3,10 +3,11 @@ import cv2
 from pyzbar import pyzbar
 from pylibdmtx import pylibdmtx
 
-image = cv2.imread('lit_photo.jpg')
+image = cv2.imread('qr2.jpg')
 
 barcodes = pyzbar.decode(image)
 b2 = pylibdmtx.decode(image)
+data = b2[0].data.decode("utf-8")
 
-print("scan 1: ", barcodes)
-print("scan 2: ", b2[0].data)
+print("data ", data)
+print("all ", b2[0])
