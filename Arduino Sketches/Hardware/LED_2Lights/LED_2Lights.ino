@@ -10,7 +10,8 @@ void setup() {
   FastLED.addLeds<APA104, LED_PIN, GRB>(leds, NUM_LEDS);
   leds[0] = CRGB (255, 255, 255);
   leds[1] = CRGB (255, 255, 255);
-  FastLED.setBrightness(255);
+
+  FastLED.setBrightness(60);
   FastLED.show();
 }
 
