@@ -17,6 +17,9 @@
 #define FRONT_LED_PIN 2
 #define NUM_LEDS 1
 
+#define readRaspiPin 1
+#define sendRaspiPin 2
+
 CRGB bottomLED[NUM_LEDS];
 CRGB frontLED[NUM_LEDS];
 
@@ -26,6 +29,10 @@ long currentLux = 0;
 bool gotFirstPack = false;
 int PERF_THRESHOLD = 23;
 int lengthPack = 2000;
+int readVal_Raspi = 0;
+int sendVal_Raspi = 3.3;
+float readVoltage = 0;
+bool movePills = false;
 
 Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591); 
 
@@ -76,18 +83,17 @@ void setup() {
   frontLED[0] = CRGB ( 0, 0, 0);
   frontLED[1] = CRGB ( 0, 0, 0);
   FastLED.show();
+
 }
 
 void loop() {
-  if (!gotFirstPack) {
-    nextPack(3250); // moves first pill pack edge to the beginning of LED
-    while (currentLux < PERF_THRESHOLD) {
-      currentLux = advancedRead();
-      OneStep(true);
-    }
-    gotFirstPack = true;
-    nextPack(lengthPack);
-  } else {
+  readVal_Raspi = analogRead(readRaspiPin);
+  readVoltage = readVal_Raspi * (5.0 / 1023.0);
+  if (readVoltage > 2) {
+    movePills = true;
+    analogWrite(sendVal_Raspi * (1023.0 / 5.0)) // send signal to Raspi that we are starting
+  }
+  while (movePills) {
     currentLux = advancedRead();
     Serial.println(currentLux);
     if (currentLux < PERF_THRESHOLD){
@@ -96,14 +102,26 @@ void loop() {
       Serial.println("found a line");
       delay(10000);
       nextPack(lengthPack);
+      analogWrite(sendRaspiPin, 0) // tell Raspi we're done 
     }
   }
+  
 }
 
 void nextPack(int stepLength) {
   for(int i = 0; i < stepLength;i++){
     OneStep(true);
   }
+}
+
+void getFirstPack() {
+  nextPack(3250); // moves first pill pack edge to the beginning of LED
+  while (currentLux < PERF_THRESHOLD) {
+    currentLux = advancedRead();
+    OneStep(true);
+  }
+  gotFirstPack = true;
+  nextPack(lengthPack);
 }
 
 long advancedRead(void) {
