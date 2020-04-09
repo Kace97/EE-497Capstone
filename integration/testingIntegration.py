@@ -17,13 +17,13 @@ while True:
     now = datetime.now()
     curr_time = int(now.strftime("%H%M%S"))
     scheduled_time = 90000 # this will be a number from the database of their desired prescription time
-    GPIO.output(powerArduinoPin,GPIO.HIGH)
-    time.sleep(1) # just in case it can't read as fast
+    time.sleep(5)
     while (stillMoving):
+        GPIO.output(powerArduinoPin,GPIO.HIGH)
         state = GPIO.input(readArduinoPin)
         if (state is False):
             stillMoving = False
             GPIO.output(powerArduinoPin,GPIO.LOW)
-    time.sleep(10)
+    
     stillMoving = True
         # insert Steve's code to take picture of tomorrow's pills
