@@ -24,7 +24,7 @@ while True:
             # insert code here that will change readyToTakePill to true
         #readyToTakePill = False
             
-    if curr_time == curr_time:
+    #if curr_time == curr_time:
         GPIO.output(powerArduinoPin,GPIO.HIGH)
         time.sleep(1) # just in case it can't read as fast
         while (stillMoving):
@@ -33,6 +33,7 @@ while True:
                 stillMoving = False
                 GPIO.output(powerArduinoPin,GPIO.LOW)
         time.sleep(10)
+        stillMoving = True
         # insert Steve's code to take picture of tomorrow's pills
     
 
