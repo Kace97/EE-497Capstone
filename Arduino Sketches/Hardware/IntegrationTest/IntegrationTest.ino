@@ -32,7 +32,7 @@ void loop() {
         counter = 0;
         Serial.println("Stopping");
       }
-    delay(1000);
+    delay(500);
     }
   }
   
