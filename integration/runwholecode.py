@@ -31,6 +31,7 @@ while True:
             state = GPIO.input(readArduinoPin)
             if (state is False):
                 stillMoving = False
+                GPIO.output(powerArduinoPin,GPIO.LOW)
         time.sleep(10)
         # insert Steve's code to take picture of tomorrow's pills
     

@@ -25,13 +25,13 @@ void loop() {
   while (movePills) {
     counter++;
     
-    if (counter > 5) {
+    if (counter > 3) {
       movePills = false; 
       digitalWrite(ledPin, LOW);
+      analogWrite(sendRaspiPin,0);
+      counter = 0;
     }
-    analogWrite(sendRaspiPin,0);
-    counter = 0;
-    delay(300);
+    delay(500);
   }
   
 }
