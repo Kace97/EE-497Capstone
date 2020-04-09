@@ -3,6 +3,10 @@ from datetime import datetime
 import RPi.GPIO as GPIO
 import time
 
+GPIO.setwarnings(False)    # Ignore warning for now
+GPIO.setmode(GPIO.BOARD)   # Use physical pin numbering
+GPIO.setup(3, GPIO.OUT, initial=GPIO.LOW)
+
 # datetime object containing current date and time
 now = datetime.now()
  
