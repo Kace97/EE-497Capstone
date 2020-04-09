@@ -17,13 +17,16 @@ while True:
     now = datetime.now()
     curr_time = int(now.strftime("%H%M%S"))
     scheduled_time = 90000 # this will be a number from the database of their desired prescription time
-    if curr_time == scheduled_time:
+    #if curr_time == scheduled_time:
         # send them a reminder 
-        while (!readyToTakePill): 
+        #while (!readyToTakePill): 
             # keep waiting until they press the button on app 
             # insert code here that will change readyToTakePill to true
-        readyToTakePill = False
+        #readyToTakePill = False
+            
+    if curr_time == curr_time:
         GPIO.output(powerArduinoPin,GPIO.HIGH)
+        time.sleep(1) # just in case it can't read as fast
         while (stillMoving):
             state = GPIO.input(readArduinoPin)
             if (state is False):

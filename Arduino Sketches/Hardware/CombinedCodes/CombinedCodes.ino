@@ -102,7 +102,7 @@ void loop() {
       Serial.println("found a line");
       delay(10000);
       nextPack(lengthPack);
-      analogWrite(sendRaspiPin, 0) // tell Raspi we're done 
+      analogWrite(sendRaspiPin, 0); // tell Raspi we're done 
     }
   }
   
