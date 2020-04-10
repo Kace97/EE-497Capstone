@@ -8,7 +8,6 @@
 #define STEPPER_FRONT_IN3 11
 #define STEPPER_FRONT_IN4 12
 
-#define LASER_PIN 6
 #define BACK_LED_PIN 3
 #define FRONT_LED_PIN 2
 #define NUM_LEDS 2
@@ -42,20 +41,11 @@ void setup() {
   FastLED.addLeds<APA104, FRONT_LED_PIN, GRB>(frontLED, NUM_LEDS);
   turnOffBackLight();
   turnOffFrontLight();
-  
-  pinMode(LASER_PIN, OUTPUT);
+ 
   Serial.begin(9600);
 }
 
 void loop() {
-  turnOnLaser();
-  delay(500);
-  turnOffLaser();
-  delay(1000);
-}
-
-
-void saving(void) {
   if (Serial.available() > 0) {
     String line = Serial.readStringUntil('\n');
     if (line == "new pack") {
@@ -96,7 +86,6 @@ void getFirstPack(void) {
 
 bool findPerf(void) {
   int numRotations = 0;
-  turnOnLaser();
   while (currLux < PERF_THRESHOLD) {
     currLux = lightSensorRead();
     oneStep(true);
@@ -106,7 +95,7 @@ bool findPerf(void) {
     }
   }
   return true;
-  turnOffLaser();
+
 }
 
 void nextPack(int stepLen) {
@@ -123,13 +112,6 @@ long lightSensorRead(void) {
   return tsl.calculateLux(full, ir);
 }
 
-void turnOnLaser(void) {
-  digitalWrite(LASER_PIN, HIGH);
-}
-
-void turnOffLaser(void) {
-  digitalWrite(LASER_PIN, LOW);
-}
 
 void turnOnBackLight(void) {
   backLED[0] = CRGB (255, 255, 255);
