@@ -48,10 +48,10 @@ void setup() {
 void loop() {
   if (Serial.available() > 0) {
     String line = Serial.readStringUntil('\n');
-    if (line == "1") {
+    if (line == "new") {
       getFirstPack();
     }
-    if (line == "3") {
+    if (line == "start") {
       nextPack(lenPack);
       foundPerf = findPerf();
       if (foundPerf) {
