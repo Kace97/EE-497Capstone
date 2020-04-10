@@ -26,7 +26,7 @@ def sendByte(sentence, ser):
 
 while True: 
     #readByte("on", ser)
-    sendByte("start\n", ser);
+    sendByte("start\n", ser)
     
     
 
