@@ -49,29 +49,34 @@ void setup() {
   FastLED.addLeds<APA104, FRONT_LED_PIN, GRB>(frontLED, NUM_LEDS);
   turnOffBackLight();
   turnOffFrontLight();
+
+  Serial.begin(9600);
 }
 
 void loop() {
-  /*
-  if its a new pack 
-      run getFirstPack to dispense the empty pill pack
-  if they want to take their pill
+  if (Serial.available() > 0) {
+    String line = Serial.readStringUntil('\n');
+    if (line == "new pack") {
+      getFirstPack();
+    }
+    if (line == "start") {
       foundPerf = findPerf();
       if (foundPerf) {
         turnOnBackLight();
-        send code to Raspi that backlight is on
+        Serial.println("backlight on");
       }
-      while read from Raspi
-        if read says yes 
-          break;
+      while not (line == "took contour") {
+        line = Serial.readStringUntil('\n');
+      }
       turnOffBackLight();
       turnOnFrontLight();
-      while read from Raspi
-        if read says yes 
-          break;
+      Serial.println("front light on");
+      while not (line == "took front photo") {
+        line = Serial.readStringUntil('\n');
+      }
       turnOffFrontLight();
-  
- */
+    }
+  }
 }
 
 
