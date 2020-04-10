@@ -1,6 +1,8 @@
 from datetime import datetime
 import time
 import serial
+from time import sleep
+import RPi.GPIO as GPIO
 
 
 def sendByte(sentence, ser):
@@ -26,13 +28,13 @@ if __name__ == '__main__':
     ser.flush()
 
     while True:
-            sendByte("hello buddy\n", ser)
+            sendByte("on\n", ser)
             print("starting test")
-            readByte("backlight on", ser)
-            takePhotos(ser)
+            #readByte("backlight on", ser)
+            #takePhotos(ser)
             # add Steve's imaging stuff here
-            print("I took a photo")
-            time.sleep(200)
+            #print("I took a photo")
+            time.sleep(5)
 
 
             
