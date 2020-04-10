@@ -27,13 +27,13 @@ if __name__ == '__main__':
     ser.flush()
 
     while True:
-            sendByte("start", ser)
-            readByte("backlight on", ser)
+        sendByte("start", ser)
+        readByte("backlight on", ser)
 
-            takePhotos(ser)
-            # add Steve's imaging stuff here
-
-            delay(100)
+        takePhotos(ser)
+        # add Steve's imaging stuff here
+        print("I took a photo");
+        time.sleep(200)
 
 
             
