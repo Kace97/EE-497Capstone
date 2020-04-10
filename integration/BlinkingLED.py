@@ -22,11 +22,12 @@ def sendByte(sentence, ser):
         ser.write(sentence.encode('ascii'))
         line = ser.readline().decode('utf-8').rstrip()
         print(line)
-        time.sleep(1)
+        
 
 while True: 
     #readByte("on", ser)
     sendByte("start\n", ser)
+    time.sleep(5)
     
     
 
