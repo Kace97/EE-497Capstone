@@ -1,4 +1,4 @@
-#define readRaspiPin 1
+#define readRaspiPin 0
 #define sendRaspiPin 3
 
 int readVal_Raspi = 0;
@@ -22,18 +22,15 @@ void loop() {
     movePills = true;
     analogWrite(sendRaspiPin, sendVal_Raspi * (1023.0 / 5.0));// send signal to Raspi that we are starting
     digitalWrite(ledPin, HIGH);
-    
-    while (movePills) {
-    counter++;
-      if (counter > 3) {
-        movePills = false; 
-        digitalWrite(ledPin, LOW);
-        analogWrite(sendRaspiPin,0.0);
-        counter = 0;
-        Serial.println("Stopping");
-      }
-    delay(500);
-    }
   }
-  
+
+  if (movePills) {
+    movePills = false; 
+    delay(1000);
+    analogWrite(sendRaspiPin,0.0);
+    
+    digitalWrite(ledPin, LOW);
+    
+  }
+  delay(50);
 }
