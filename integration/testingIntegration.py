@@ -15,10 +15,11 @@ def readByte(sentence, ser):
 
 
 def takePhotos(ser): # takes photos of next day's pills
-        # Raspi takes picture with backlight
+        time.sleep(2) # Raspi takes picture with backlight
         sendByte("took contour\n", ser) # Raspi sends a signal back saying that it took the picture
         readByte("front light on", ser) # Arduino sends signals that says the front light is lit
-        
+
+        time.sleep(2)
         # Raspi takes picture with front light
         sendByte("took front photo", ser) # send confirmation code to Arduino that front photo was taken
 

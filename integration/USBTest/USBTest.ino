@@ -48,17 +48,19 @@ void setup() {
 void loop() {
   if (Serial.available() > 0) {
     String line = Serial.readStringUntil('\n');
+    /*
     if (line == "new") {
       getFirstPack();
     }
-    if (line == "start") {
+    */
+    if (line == "on") {
       nextPack(lenPack);
       foundPerf = findPerf();
       if (foundPerf) {
         turnOnBackLight();
         Serial.println("backlight on");
       } 
-      
+      /*
       while (line != "took contour") {
         line = Serial.readStringUntil('\n');
       }
@@ -69,7 +71,7 @@ void loop() {
         line = Serial.readStringUntil('\n');
       }
       turnOffFrontLight();
-      
+      */
     }
   }
 }
@@ -87,18 +89,18 @@ void getFirstPack(void) {
   nextPack(lenPack);
 }
 
-bool findPerf(void) {
+bool findPerf() {
   int numRotations = 0;
+  
   while (currLux < PERF_THRESHOLD) {
     currLux = lightSensorRead();
     oneStep(true);
     numRotations++;
     if (numRotations > 500) { // 500 is just a random number I chose, may have to change this
-        return false; // send error that we couldn't find perforation
+        foundPerf = false; // send error that we couldn't find perforation
     }
   }
-  return true;
-
+  return foundPerf;
 }
 
 void nextPack(int stepLen) {
