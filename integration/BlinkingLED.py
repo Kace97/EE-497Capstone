@@ -19,9 +19,9 @@ def readByte(sentence, ser): # tests if Raspi can read from Arduino
         GPIO.output(3, GPIO.LOW) # Turn off LED
 """
 def sendByte(sentence, ser):
-        ser.write(sentence.encode('ascii'))
-        line = ser.readline().decode('utf-8').rstrip()
-        print(line)
+        ser.write('5')
+        #line = ser.readline().decode('utf-8').rstrip()
+        print("trying to work")
         
 
 while True: 
