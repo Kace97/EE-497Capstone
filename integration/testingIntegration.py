@@ -31,7 +31,7 @@ if __name__ == '__main__':
             sendByte("on\n", ser)
             print("starting test")
             readByte("backlight on", ser)
-            takePhotos(ser)
+            #takePhotos(ser)
             # add Steve's imaging stuff here
             print("I took a photo")
             time.sleep(5)
