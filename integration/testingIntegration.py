@@ -26,7 +26,7 @@ if __name__ == '__main__':
     ser.flush()
 
     while True:
-            sendByte("3\n", ser)
+            sendByte("hello buddy\n", ser)
             print("starting test")
             readByte("backlight on", ser)
             takePhotos(ser)

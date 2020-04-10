@@ -48,15 +48,17 @@ void setup() {
 void loop() {
   if (Serial.available() > 0) {
     String line = Serial.readStringUntil('\n');
-    if (line == "new pack") {
+    if (line == "1") {
       getFirstPack();
     }
-    if (line == "start") {
+    if (line == "3") {
+      nextPack(lenPack);
       foundPerf = findPerf();
       if (foundPerf) {
         turnOnBackLight();
         Serial.println("backlight on");
-      }
+      } 
+      
       while (line != "took contour") {
         line = Serial.readStringUntil('\n');
       }
@@ -67,6 +69,7 @@ void loop() {
         line = Serial.readStringUntil('\n');
       }
       turnOffFrontLight();
+      
     }
   }
 }
