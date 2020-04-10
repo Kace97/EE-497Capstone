@@ -4,19 +4,18 @@ import serial
 
 
 def sendByte(sentence, ser):
-        sentence = sentence + "\n"
         ser.write(sentence.encode('ascii'))
 
 def readByte(sentence, ser):
         line = ""
-        while not line == sentence:
+        while line != sentence:
                 if ser.in_waiting > 0:
                     line = ser.readline().decode('utf-8').rstrip()
 
 
 def takePhotos(ser): # takes photos of next day's pills
         # Raspi takes picture with backlight
-        sendByte("took contour", ser) # Raspi sends a signal back saying that it took the picture
+        sendByte("took contour\n", ser) # Raspi sends a signal back saying that it took the picture
         readByte("front light on", ser) # Arduino sends signals that says the front light is lit
         
         # Raspi takes picture with front light
@@ -27,7 +26,7 @@ if __name__ == '__main__':
     ser.flush()
 
     while True:
-            sendByte("start", ser)
+            sendByte("3\n", ser)
             print("starting test")
             readByte("backlight on", ser)
             takePhotos(ser)
