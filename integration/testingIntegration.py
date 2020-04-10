@@ -7,7 +7,7 @@ def sendByte(sentence, ser):
         sentence = sentence + "\n"
         ser.write(sentence.encode('ascii'))
 
-def readByte(sentence):
+def readByte(sentence, ser):
         line = ""
         while not line == sentence:
                 if ser.in_waiting > 0:
@@ -27,13 +27,13 @@ if __name__ == '__main__':
     ser.flush()
 
     while True:
-        sendByte("start", ser)
-        readByte("backlight on", ser)
-
-        takePhotos(ser)
-        # add Steve's imaging stuff here
-        print("I took a photo");
-        time.sleep(200)
+            sendByte("start", ser)
+            print("starting test")
+            readByte("backlight on", ser)
+            takePhotos(ser)
+            # add Steve's imaging stuff here
+            print("I took a photo")
+            time.sleep(200)
 
 
             
