@@ -9,24 +9,16 @@ GPIO.setup(3, GPIO.OUT, initial=GPIO.LOW) # Set pin 8 to be an output pin and se
 
 ser = serial.Serial('/dev/ttyACM0',9600)
 
-def readByte(sentence, ser): # tests if Raspi can read from Arduino
+def readByte(sentence, ser):
         line = ""
         while line != sentence:
                 if ser.in_waiting > 0:
                     line = ser.readline().decode('utf-8').rstrip()
-        GPIO.output(3, GPIO.HIGH) # Turn on LED
-        sleep(1) 
-        GPIO.output(3, GPIO.LOW) # Turn off LED
 
-def sendByte(sentence, ser):
-        ser.write(sentence.encode('ascii'))
-        line = ser.readline().decode('utf-8').rstrip()
-        print(line)
-        time.sleep(1)
-
-while True: 
-    #readByte("on", ser)
-    sendByte("start\n", ser);
-    
-    
+while True: # Run forever
+    readByte("on", ser)
+    GPIO.output(3, GPIO.HIGH) # Turn on
+    sleep(1) # Sleep for 1 second
+    GPIO.output(3, GPIO.LOW) # Turn off
+    sleep(1) # Sleep for 1 second
 
