@@ -1,14 +1,11 @@
 from datetime import datetime
-import RPi.GPIO as GPIO
 import time
 import serial
 
 
 def sendByte(sentence, ser):
+        sentence = sentence + "\n"
         ser.write(sentence.encode('ascii'))
-        line = ser.readline().decode('utf-8').rstrip()
-        print(line)
-        time.sleep(1)
 
 def readByte(sentence):
         line = ""
@@ -17,30 +14,32 @@ def readByte(sentence):
                     line = ser.readline().decode('utf-8').rstrip()
 
 
-def takePhotos(): # takes photos of next day's pills
+def takePhotos(ser): # takes photos of next day's pills
         # Raspi takes picture with backlight
-        sendByte("took contour\n", ser) # Raspi sends a signal back saying that it took the picture
-        readByte("front light on") # Arduino sends signals that says the front light is lit
+        sendByte("took contour", ser) # Raspi sends a signal back saying that it took the picture
+        readByte("front light on", ser) # Arduino sends signals that says the front light is lit
         
         # Raspi takes picture with front light
-        sendByte("took front photo\n", ser) # send confirmation code to Arduino that front photo was taken
+        sendByte("took front photo", ser) # send confirmation code to Arduino that front photo was taken
 
 if __name__ == '__main__':
     ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
     ser.flush()
-    
-    sendByte("start\n", ser)
-    readByte("backlight on")
 
-    takePhotos()
-    # add Steve's imaging stuff here
+    while True:
+            sendByte("start", ser)
+            readByte("backlight on", ser)
 
+            takePhotos(ser)
+            # add Steve's imaging stuff here
 
-
+            delay(100)
 
 
             
 """
+This code will be added once the webapp stuff is completed
+
 bool sentConfirmation = False 
 
 def sendReminder(): # add from Zhongyi's code
