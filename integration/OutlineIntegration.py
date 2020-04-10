@@ -21,7 +21,7 @@ def takePhotos(): # takes photos of next day's pills
         # Raspi takes picture with front light
         
 
-while 1 :
+while True :
         now = datetime.now()
         currTime = int(now.strftime("%H%M%S")) # 24 hr clock
         schedTime = 9000 # filler for now. Will be an input time from user. 
