@@ -32,6 +32,7 @@ if __name__ == '__main__':
             sendByte("on\n", ser)
             print("starting test")
             readByte("back", ser)
+            print("got message")
             takePhotos(ser)
             # add Steve's imaging stuff here
             print("I took a photo")

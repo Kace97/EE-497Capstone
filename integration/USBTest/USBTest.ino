@@ -15,7 +15,7 @@
 
 int gateNum = 0;
 long currLux = 0;
-int PERF_THRESHOLD = 23;
+int PERF_THRESHOLD = 11;
 int lenPack = 2000;
 bool foundPerf = false;
 
@@ -48,30 +48,30 @@ void setup() {
 void loop() {
   if (Serial.available() > 0) {
     String line = Serial.readStringUntil('\n');
-    /*
+    
     if (line == "new") {
       getFirstPack();
     }
-    */
+    
     if (line == "on") {
       nextPack(lenPack);
       foundPerf = findPerf();
       if (foundPerf) {
         turnOnBackLight();
-        Serial.println("backlight on");
+        Serial.println("back");
       } 
-      /*
-      while (line != "took contour") {
+      
+      while (line != "contour") {
         line = Serial.readStringUntil('\n');
       }
       turnOffBackLight();
       turnOnFrontLight();
-      Serial.println("front light on");
-      while (line != "took front photo") {
+      Serial.println("front");
+      while (line != "front") {
         line = Serial.readStringUntil('\n');
       }
       turnOffFrontLight();
-      */
+      
     }
   }
 }
