@@ -28,9 +28,10 @@ if __name__ == '__main__':
     ser.flush()
 
     while True:
+            time.sleep(2)
             sendByte("on\n", ser)
             print("starting test")
-            readByte("backlight on", ser)
+            readByte("back", ser)
             #takePhotos(ser)
             # add Steve's imaging stuff here
             print("I took a photo")
