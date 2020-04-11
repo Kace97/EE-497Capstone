@@ -31,12 +31,11 @@ if __name__ == '__main__':
             time.sleep(2)
             sendByte("on\n", ser)
             print("starting test")
-            readByte("back", ser)
+            #readByte("back", ser)
             #takePhotos(ser)
             # add Steve's imaging stuff here
             print("I took a photo")
             time.sleep(5)
-
 
             
 """
