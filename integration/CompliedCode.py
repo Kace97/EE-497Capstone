@@ -2,7 +2,10 @@ from datetime import datetime
 import time
 import serial
 from time import sleep
-
+import pill_analyzer as pa
+import pill_segmenter as ps
+from picamera import PiCamera
+import cv2
 
 def sendByte(sentence, ser):
         sentence = sentence + "\n"
@@ -18,30 +21,55 @@ def readByte(sentence, ser):
 def takePhotos(ser): # takes photos of next day's pills
         # backlight photo
         readByte("backlight on", ser) 
-        time.sleep(2) # Replace this with code to take contour photo Raspi  
-        print("took contour photo")
+        with PiCamera() as camera:
+                print("Taking contour photo")
+                time.sleep(2)
+                camera.capture('rpi_photo.jpg')
+                print("took contour photo")
+                # front light photo
+                sendByte("took contour", ser)
+                readByte("front light on", ser) 
+                print("Taking bright photo")
+                time.sleep(2)
+                camera.capture('lit_photo.jpg')
+                print("took front photo")
+                # send confirmation
+                sendByte("took front photo", ser) 
 
-        # front light photo
-        sendByte("took contour", ser)
-        readByte("front light on", ser) 
-        time.sleep(2)# Replace this with code to take front photo Raspi 
-        print("took front photo")
+def segmentation():
+	seg.original_image = cv2.imread('test_images/rpi_photo.jpg')
+	seg.bright_image = cv2.imread('test_images/lit_photo.jpg')
+	num_pills = seg.segment_pills(debug_mode=False)
+        return num_pills
 
-        # send confirmation
-        sendByte("took front photo", ser) 
+def analysis(num_pills):
+	print("Analyzing pill(s)")
+	an.qr_image = cv2.imread('images/qr_code.jpg')
+	print("QR code: %s" %an.decode_qr())
+	for i in range(num_pills):
+		enc = an.encode_pill('images/lit_pill' + str(i) + '.jpg')
+		print("Encoding:", enc)
 
 if __name__ == '__main__':
-    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-    ser.flush()
+        ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+        ser.flush()
+        # SETUP
+        print("Setting up system")
+        seg = ps.PillSegmenter()
+        an = pa.PillAnalyzer()
+        seg.thresh_thresh = 110 #100-170
+        seg.circle_thresh = 11 #11 is default
 
-    while True:
-            time.sleep(1) # need a delay to send first byte
-            sendByte("start", ser)
-            print("starting test")
-            takePhotos(ser)
-            # add Steve's imaging processing stuff here
-            print("done")
-            time.sleep(5)
+        while True:
+                time.sleep(1) # need a delay to send first byte
+                sendByte("start", ser)
+                print("starting test")
+                takePhotos(ser)
+                # add Steve's imaging processing stuff here
+                num_pills = segmentation()
+                analysis(num_pills)
+                print("done")
+                time.sleep(5)
 
             
 """
