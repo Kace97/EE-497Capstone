@@ -151,7 +151,17 @@ void unifiedSensorAPIRead(void)
 void loop(void) 
 { 
   //simpleRead(); 
-  advancedRead();
+  long curLux = lightSensorRead();
+  Serial.println(curLux);
   // unifiedSensorAPIRead();
   
+}
+
+
+long lightSensorRead(void) {
+  uint32_t lum = tsl.getFullLuminosity();
+  uint16_t ir, full;
+  ir = lum >> 16;
+  full = lum & 0xFFFF;
+  return tsl.calculateLux(full, ir);
 }

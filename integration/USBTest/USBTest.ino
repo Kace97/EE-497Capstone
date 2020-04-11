@@ -89,17 +89,15 @@ void getFirstPack(void) {
   nextPack(lenPack);
 }
 
-bool findPerf() {
+bool findPerf(void) {
   int numRotations = 0;
   
   while (currLux < PERF_THRESHOLD) {
     currLux = lightSensorRead();
     oneStep(true);
     numRotations++;
-    if (numRotations > 500) { // 500 is just a random number I chose, may have to change this
-        foundPerf = false; // send error that we couldn't find perforation
-    }
   }
+  foundPerf = true;
   return foundPerf;
 }
 
