@@ -24,7 +24,7 @@ def takePhotos(ser): # takes photos of next day's pills
         # front light photo
         sendByte("took contour", ser)
         readByte("front light on", ser) 
-        time.sleep(2)# Replace this with code to take contour photo Raspi 
+        time.sleep(2)# Replace this with code to take front photo Raspi 
         print("took front photo")
 
         # send confirmation
@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
             
 """
-This code will be added once the webapp stuff is completed
+Some of this code will be added once the webapp stuff is completed
 
 bool sentConfirmation = False 
 
