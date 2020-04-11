@@ -97,8 +97,8 @@ bool findPerf(void) {
     oneStep(true);
     numRotations++;
   }
-  foundPerf = true;
-  return foundPerf;
+  
+  return true;
 }
 
 void nextPack(int stepLen) {

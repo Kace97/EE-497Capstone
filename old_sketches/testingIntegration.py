@@ -16,35 +16,26 @@ def readByte(sentence, ser):
 
 def takePhotos(ser): # takes photos of next day's pills
         time.sleep(2) # Raspi takes picture with backlight
-        sendByte("took contour\n", ser) # Raspi sends a signal back saying that it took the picture
-        readByte("front light on", ser) # Arduino sends signals that says the front light is lit
+        sendByte("contour\n", ser) # Raspi sends a signal back saying that it took the picture
+        readByte("front", ser) # Arduino sends signals that says the front light is lit
 
         time.sleep(2)
         # Raspi takes picture with front light
-        sendByte("took front photo", ser) # send confirmation code to Arduino that front photo was taken
+        sendByte("front\n", ser) # send confirmation code to Arduino that front photo was taken
 
 if __name__ == '__main__':
     ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
     ser.flush()
 
     while True:
-<<<<<<< HEAD
-            time.sleep(1)
-	    sendByte("on\n", ser)
-            print("starting test")
-           # readByte("back", ser)
-            #takePhotos(ser)
-            # add Steve's imaging stuff here
-           # print("I took a photo")
-=======
             time.sleep(2)
             sendByte("on\n", ser)
             print("starting test")
-            #readByte("back", ser)
-            #takePhotos(ser)
+            readByte("back", ser)
+            print("got message")
+            takePhotos(ser)
             # add Steve's imaging stuff here
             print("I took a photo")
->>>>>>> 07b130e26ed968cff9dd867e22d8e8930d6f6051
             time.sleep(5)
 
             
