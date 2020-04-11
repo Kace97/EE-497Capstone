@@ -26,7 +26,7 @@ def sendByte(sentence, ser):
 
 while True: 
     #readByte("on", ser)
-    sendByte("5\n", ser)
+    sendByte("on\n", ser)
     time.sleep(5)
     
     
