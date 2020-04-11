@@ -58,16 +58,16 @@ void loop() {
       foundPerf = findPerf();
       if (foundPerf) {
         turnOnBackLight();
-        Serial.println("back");
+        Serial.println("backlight on");
       } 
       
-      while (line != "contour") {
+      while (line != "took contour") {
         line = Serial.readStringUntil('\n');
       }
       turnOffBackLight();
       turnOnFrontLight();
-      Serial.println("front");
-      while (line != "front") {
+      Serial.println("front light on");
+      while (line != "took front photo") {
         line = Serial.readStringUntil('\n');
       }
       turnOffFrontLight();

@@ -5,6 +5,7 @@ from time import sleep
 
 
 def sendByte(sentence, ser):
+        sentence = sentence + "\n"
         ser.write(sentence.encode('ascii'))
 
 def readByte(sentence, ser):
@@ -15,27 +16,31 @@ def readByte(sentence, ser):
 
 
 def takePhotos(ser): # takes photos of next day's pills
-        time.sleep(2) # Raspi takes picture with backlight
-        sendByte("contour\n", ser) # Raspi sends a signal back saying that it took the picture
-        readByte("front", ser) # Arduino sends signals that says the front light is lit
+        # backlight photo
+        readByte("backlight on", ser) 
+        time.sleep(2) # Replace this with code to take contour photo Raspi  
+        print("took contour photo")
 
-        time.sleep(2)
-        # Raspi takes picture with front light
-        sendByte("front\n", ser) # send confirmation code to Arduino that front photo was taken
+        # front light photo
+        sendByte("took contour", ser)
+        readByte("front light on", ser) 
+        time.sleep(2)# Replace this with code to take contour photo Raspi 
+        print("took front photo")
+
+        # send confirmation
+        sendByte("took front photo", ser) 
 
 if __name__ == '__main__':
     ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
     ser.flush()
 
     while True:
-            time.sleep(2)
-            sendByte("on\n", ser)
+            time.sleep(1) # need a delay to send first byte
+            sendByte("start", ser)
             print("starting test")
-            readByte("back", ser)
-            print("got message")
             takePhotos(ser)
-            # add Steve's imaging stuff here
-            print("I took a photo")
+            # add Steve's imaging processing stuff here
+            print("done")
             time.sleep(5)
 
             
