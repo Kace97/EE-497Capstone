@@ -40,7 +40,7 @@ def segmentation():
 	seg.original_image = cv2.imread('test_images/rpi_photo.jpg')
 	seg.bright_image = cv2.imread('test_images/lit_photo.jpg')
 	num_pills = seg.segment_pills(debug_mode=False)
-        return num_pills
+	return num_pills
 
 def analysis(num_pills):
 	print("Analyzing pill(s)")
