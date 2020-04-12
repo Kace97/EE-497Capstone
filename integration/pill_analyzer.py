@@ -21,8 +21,8 @@ class PillAnalyzer:
 	    return dec
 	    
     def load_model(self, model_name='models/borg_keras.h5'):
-	print("Loading model")
-	t0 = time.time()
+        print("Loading model")
+        t0 = time.time()
 	autoencoder = load_model(model_name)
 	encoder = Model(inputs=autoencoder.input, outputs=autoencoder.get_layer('encoder').output)
 	t1 = time.time()

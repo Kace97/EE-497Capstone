@@ -28,27 +28,27 @@ def takePhotos(ser): # takes photos of next day's pills
                 print("took contour photo")
                 # front light photo
                 sendByte("took contour", ser)
-                readByte("front light on", ser) 
+                readByte("front light on", ser)
                 print("Taking bright photo")
                 time.sleep(2)
                 camera.capture('lit_photo.jpg')
                 print("took front photo")
                 # send confirmation
-                sendByte("took front photo", ser) 
+                sendByte("took front photo", ser)
 
 def segmentation():
-	seg.original_image = cv2.imread('test_images/rpi_photo.jpg')
-	seg.bright_image = cv2.imread('test_images/lit_photo.jpg')
-	num_pills = seg.segment_pills(debug_mode=False)
-	return num_pills
+        seg.original_image = cv2.imread('test_images/rpi_photo.jpg')
+        seg.bright_image = cv2.imread('test_images/lit_photo.jpg')
+        num_pills = seg.segment_pills(debug_mode=False)
+        return num_pills
 
 def analysis(num_pills):
-	print("Analyzing pill(s)")
-	an.qr_image = cv2.imread('images/qr_code.jpg')
-	print("QR code: %s" %an.decode_qr())
-	for i in range(num_pills):
-		enc = an.encode_pill('images/lit_pill' + str(i) + '.jpg')
-		print("Encoding:", enc)
+        print("Analyzing pill(s)")
+        an.qr_image = cv2.imread('images/qr_code.jpg')
+        print("QR code: %s" %an.decode_qr())
+        for i in range(num_pills):
+                enc = an.encode_pill('images/lit_pill' + str(i) + '.jpg')
+                print("Encoding:", enc)
 
 if __name__ == '__main__':
         ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
