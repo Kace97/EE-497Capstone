@@ -15,7 +15,7 @@
 
 int gateNum = 0;
 long currLux = 0;
-int PERF_THRESHOLD = 11;
+int PERF_THRESHOLD = 14;
 int lenPack = 2000;
 bool foundPerf = false;
 

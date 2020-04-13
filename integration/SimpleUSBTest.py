@@ -9,6 +9,10 @@ GPIO.setup(3, GPIO.OUT, initial=GPIO.LOW) # Set pin 8 to be an output pin and se
 
 ser = serial.Serial('/dev/ttyACM0',9600)
 
+def sendByte(sentence, ser):
+        sentence = sentence + "\n"
+        ser.write(sentence.encode('ascii'))
+
 def readByte(sentence, ser):
         line = ""
         while line != sentence:
@@ -16,9 +20,8 @@ def readByte(sentence, ser):
                     line = ser.readline().decode('utf-8').rstrip()
 
 while True: # Run forever
-    readByte("on", ser)
-    GPIO.output(3, GPIO.HIGH) # Turn on
-    sleep(1) # Sleep for 1 second
-    GPIO.output(3, GPIO.LOW) # Turn off
-    sleep(1) # Sleep for 1 second
+    time.sleep(1) # Sleep for 1 second
+    sendByte("on", ser)
+    time.sleep(10)
+    
 

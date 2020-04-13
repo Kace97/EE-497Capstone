@@ -15,19 +15,19 @@
 
 #define BACK_LED_PIN 3
 #define FRONT_LED_PIN 2
-#define NUM_LEDS 1
+#define NUM_LEDS 2
 
 #define readRaspiPin 1
 #define sendRaspiPin 2
 
-CRGB bottomLED[NUM_LEDS];
+CRGB backLED[NUM_LEDS];
 CRGB frontLED[NUM_LEDS];
 
 int gateStep = 0;
 int numSteps = 0;
 long currentLux = 0;
 bool gotFirstPack = false;
-int PERF_THRESHOLD = 23;
+int PERF_THRESHOLD = 17;
 int lengthPack = 2000;
 int readVal_Raspi = 0;
 int sendVal_Raspi = 3.3;
@@ -76,10 +76,10 @@ void setup() {
   
   configureSensor();
 
-  FastLED.addLeds<APA104, BACK_LED_PIN, GRB>(bottomLED, NUM_LEDS);
+  FastLED.addLeds<APA104, BACK_LED_PIN, GRB>(backLED, NUM_LEDS);
   FastLED.addLeds<APA104, FRONT_LED_PIN, GRB>(frontLED, NUM_LEDS);
-  bottomLED[0] = CRGB ( 0, 0, 0);
-  bottomLED[1] = CRGB ( 0, 0, 0);
+  backLED[0] = CRGB ( 0, 0, 0);
+  backLED[1] = CRGB ( 0, 0, 0);
   frontLED[0] = CRGB ( 0, 0, 0);
   frontLED[1] = CRGB ( 0, 0, 0);
   FastLED.show();
@@ -87,26 +87,51 @@ void setup() {
 }
 
 void loop() {
-  readVal_Raspi = analogRead(readRaspiPin);
-  readVoltage = readVal_Raspi * (5.0 / 1023.0);
-  if (readVoltage > 2) {
-    movePills = true;
-    analogWrite(sendVal_Raspi * (1023.0 / 5.0)) // send signal to Raspi that we are starting
-  }
-  while (movePills) {
     currentLux = advancedRead();
     Serial.println(currentLux);
     if (currentLux < PERF_THRESHOLD){
       OneStep(true);
     } else {
       Serial.println("found a line");
-      delay(10000);
-      nextPack(lengthPack);
+      delay(1000);
+      turnOnBackLight();
+      delay(1000);
+      turnOffBackLight();
+      turnOnFrontLight();
+      delay(1000);
+      turnOffFrontLight();
+
       analogWrite(sendRaspiPin, 0); // tell Raspi we're done 
     }
-  }
+  
   
 }
+
+
+void turnOnBackLight(void) {
+  backLED[0] = CRGB (255, 255, 255);
+  backLED[1] = CRGB (255, 255, 255);
+  FastLED.show();
+}
+
+void turnOffBackLight(void) {
+  backLED[0] = CRGB (0, 0, 0);
+  backLED[1] = CRGB (0, 0, 0);
+  FastLED.show();
+}
+
+void turnOnFrontLight(void) {
+  frontLED[0] = CRGB (255, 255, 255);
+  frontLED[1] = CRGB (255, 255, 255);
+  FastLED.show();
+}
+
+void turnOffFrontLight(void) {
+  frontLED[0] = CRGB (0, 0, 0);
+  frontLED[1] = CRGB (0, 0, 0);
+  FastLED.show();
+}
+
 
 void nextPack(int stepLength) {
   for(int i = 0; i < stepLength;i++){
