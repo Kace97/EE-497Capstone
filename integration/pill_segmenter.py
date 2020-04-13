@@ -34,7 +34,7 @@ class PillSegmenter:
 		contour_sorted = sorted(contours, key=cv2.contourArea)
 		if self.debug_mode:
 			new_img = self.original_image.copy()
-			cv2.drawContours(new_img, contour_sorted, -1, (0, 255, 0)
+			cv2.drawContours(new_img, contour_sorted, -1, (0, 255, 0))
 			cv2.imwrite(self.save_folder+'/contours.jpg', new_img)
 		return contour_sorted
 
