@@ -37,8 +37,8 @@ def takePhotos(ser): # takes photos of next day's pills
                 sendByte("took front photo", ser)
 
 def segmentation():
-        seg.original_image = cv2.imread('test_images/rpi_photo.jpg')
-        seg.bright_image = cv2.imread('test_images/lit_photo.jpg')
+        seg.original_image = cv2.imread('rpi_photo.jpg')
+        seg.bright_image = cv2.imread('lit_photo.jpg')
         num_pills = seg.segment_pills(debug_mode=False)
         return num_pills
 
@@ -56,7 +56,7 @@ if __name__ == '__main__':
         # SETUP
         print("Setting up system")
         seg = ps.PillSegmenter()
-        an = pa.PillAnalyzer()
+ #       an = pa.PillAnalyzer()
         seg.thresh_thresh = 110 #100-170
         seg.circle_thresh = 11 #11 is default
 
@@ -67,7 +67,7 @@ if __name__ == '__main__':
                 takePhotos(ser)
                 # add Steve's imaging processing stuff here
                 num_pills = segmentation()
-                analysis(num_pills)
+#                analysis(num_pills)
                 print("done")
                 time.sleep(5)
 
