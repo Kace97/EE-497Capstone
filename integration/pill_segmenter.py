@@ -26,7 +26,7 @@ class PillSegmenter:
 		img = cv2.cvtColor(self.original_image, cv2.COLOR_BGR2GRAY) # better in grayscale
 		ret, thresh = cv2.threshold(img, self.thresh_thresh, high, 0)
 		if self.debug_mode:
-			cv2.imwrite(self.save_folder + 'thresh.jpg', thresh)
+			cv2.imwrite(self.save_folder + '/thresh.jpg', thresh)
 		return thresh
 
 	def do_contours(self, thresh):
@@ -43,7 +43,7 @@ class PillSegmenter:
 		for contour in cs:
 			approx = cv2.approxPolyDP(contour,0.01*cv2.arcLength(contour,True),True)
 			area = cv2.contourArea(contour)
-			if ((len(approx) > self.circle_thresh) & (area > 30) & (area < 50000) ):
+			if ((len(approx) > self.circle_thresh) & (area > 5000) & (area < 180000) ):
 				contour_list.append(contour)
                 
 		if self.debug_mode:
@@ -58,7 +58,7 @@ class PillSegmenter:
 		new_img3 = self.original_image.copy()
 		i = 0
 
-		while cv2.contourArea(circles_sorted[index-i]) > 10000:
+		while cv2.contourArea(circles_sorted[index-i]) > 120000:
 			x, y, w, h = self.get_bounding_rect(circles_sorted[index-i])
 			cropped = self.original_image.copy()[y:y+h, x:x+w]
 			lit_cropped = self.bright_image.copy()[y:y+h, x:x+w]
@@ -109,9 +109,9 @@ class PillSegmenter:
 		self.debug_mode=debug_mode
 		print("Processing images")
 		cv2.imwrite(self.save_folder+'/original_image.jpg', self.original_image)
-		self.bright_image = self.original_image # DELETE THIS
+#		self.bright_image = self.original_image # DELETE THIS
 		thresh = self.threshold_image()
-		self.crop_qr(thresh)
+#		self.crop_qr(thresh)
 		cs = self.do_contours(thresh)
 		circles_sorted = self.find_circles(cs)
 		index = len(circles_sorted) - 1

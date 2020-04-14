@@ -2,10 +2,21 @@ from datetime import datetime
 import time
 import serial
 from time import sleep
-import pill_analyzer as pa
+#import pill_analyzer as pa
 import pill_segmenter as ps
 from picamera import PiCamera
 import cv2
+
+
+ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+ser.flush()
+# SETUP
+print("Setting up system")
+seg = ps.PillSegmenter()
+#an = pa.PillAnalyzer()
+seg.thresh_thresh = 100 #100-170
+seg.circle_thresh = 8 #11 is default
+print("Finished Setup")
 
 def sendByte(sentence, ser):
         sentence = sentence + "\n"
@@ -22,6 +33,7 @@ def takePhotos(ser): # takes photos of next day's pills
         # backlight photo
         readByte("backlight on", ser) 
         with PiCamera() as camera:
+                camera.resolution=(3280,2464)
                 print("Taking contour photo")
                 time.sleep(2)
                 camera.capture('rpi_photo.jpg')
@@ -39,7 +51,7 @@ def takePhotos(ser): # takes photos of next day's pills
 def segmentation():
         seg.original_image = cv2.imread('rpi_photo.jpg')
         seg.bright_image = cv2.imread('lit_photo.jpg')
-        num_pills = seg.segment_pills(debug_mode=False)
+        num_pills = seg.segment_pills(debug_mode=True)
         return num_pills
 
 def analysis(num_pills):
@@ -49,20 +61,24 @@ def analysis(num_pills):
         for i in range(num_pills):
                 enc = an.encode_pill('images/lit_pill' + str(i) + '.jpg')
                 print("Encoding:", enc)
+        
+def scan_pill():
+        time.sleep(3) # need a delay to send first byte
+        sendByte("on", ser)
+        print("starting test")
+        takePhotos(ser)
+        # add Steve's imaging processing stuff here
+        num_pills = segmentation()
+        # analysis(num_pills)
+        print("done")
+        time.sleep(5)
+        return num_pills
 
 if __name__ == '__main__':
-        ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
-        ser.flush()
-        # SETUP
-        print("Setting up system")
-        seg = ps.PillSegmenter()
- #       an = pa.PillAnalyzer()
-        seg.thresh_thresh = 110 #100-170
-        seg.circle_thresh = 11 #11 is default
-
+        
         while True:
-                time.sleep(1) # need a delay to send first byte
-                sendByte("start", ser)
+                time.sleep(3) # need a delay to send first byte
+                sendByte("on", ser)
                 print("starting test")
                 takePhotos(ser)
                 # add Steve's imaging processing stuff here

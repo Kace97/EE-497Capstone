@@ -58,6 +58,7 @@ void loop() {
       foundPerf = findPerf();
       
       if (foundPerf) {
+        nextPack(600)
         turnOnBackLight();
         Serial.println("backlight on");
       } 
