@@ -41,7 +41,7 @@ void setup() {
   FastLED.addLeds<APA104, FRONT_LED_PIN, GRB>(frontLED, NUM_LEDS);
   turnOffBackLight();
   turnOffFrontLight();
- 
+  FastLED.setBrightness(255);
   Serial.begin(9600);
 }
 
