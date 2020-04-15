@@ -22,8 +22,14 @@ void setup() {
 }
 
 void loop() {
-  OneStep(false);
-  delay(10);
+  for(int i = 0; i < 4000;i++){
+    OneStep(true);
+  }
+  delay(500);
+  for(int i = 0; i < 6000;i++){
+    OneStep(true);
+  }
+  delay(1000);
 }
 
 
