@@ -34,6 +34,7 @@ void loop() {
 
 
 void OneStep(bool dir){
+  delay(5);
   if(dir){
     switch(stepNum){
         case 0:
