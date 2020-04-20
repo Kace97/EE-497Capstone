@@ -26,9 +26,6 @@ Adafruit_TSL2591 tsl = Adafruit_TSL2591(2591);
 
 
 
-
-
-
 void setup() {
   configureSensor();
 
@@ -56,9 +53,10 @@ void loop() {
     if (line == "on") {
       nextPack(lenPack);
       foundPerf = findPerf();
+      //foundPerf = true;
       
       if (foundPerf) {
-        nextPack(600)
+        //nextPack(400);
         turnOnBackLight();
         Serial.println("backlight on");
       } 
@@ -145,7 +143,7 @@ void turnOffFrontLight(void) {
 }
 
 void oneStep(bool dir){
-  delay(2);
+  delay(5);
   if(dir){
     switch(gateNum){
         case 0:
