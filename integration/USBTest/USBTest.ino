@@ -75,6 +75,23 @@ void loop() {
       
       turnOffFrontLight();
     }
+    if (line == "pics") {
+      turnOnBackLight();
+      Serial.println("backlight on");
+      
+      while (line != "took contour") {
+        line = Serial.readStringUntil('\n');
+      }
+      
+      turnOffBackLight();
+      turnOnFrontLight();
+      Serial.println("front light on");
+      
+      while (line != "took front photo") {
+        line = Serial.readStringUntil('\n');
+      }
+      turnOffFrontLight();
+    }
   }
 }
 
