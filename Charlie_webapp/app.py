@@ -1,7 +1,10 @@
-from flask import Flask, render_template, redirect, url_for, send_file
+from flask import Flask, render_template, redirect, url_for, send_file, render_template_string
 import datetime
+import requests
 
 app = Flask(__name__,template_folder='Templates/')
+
+response = requests.get('https://api.github.com')
 
 # Set up title, headers, etc for home page
 def template(title = "PILL WEB APP", text = "Home Page"):
@@ -13,13 +16,6 @@ def template(title = "PILL WEB APP", text = "Home Page"):
         'text' : text
         }
     return templateData
-
-@app.route("/")
-def main():
-    return render_template('index.html')
-
-if __name__ == '__main__':
-  app.run(debug=True, host='0.0.0.0')
 
 # Set home page
 @app.route("/")
@@ -46,8 +42,20 @@ def home():
     templateData = template()
     return render_template('main.html', **templateData)
 
-if __name__ == "__main__":        
-    app.run() 
+@app.route("/data")
+def index():
+	# Read Sensors Status
+	buttonSts = GPIO.input(button)
+	senPIRSts = GPIO.input(senPIR)
+	templateData = {
+      'title' : 'GPIO input Status!',
+      'button'  : buttonSts,
+      'senPIR'  : senPIRSts
+      }
+	return render_template('index.html', **templateData)
+
+if __name__ == '__main__':
+  app.run(debug=True, host='0.0.0.0')
 
 
 
