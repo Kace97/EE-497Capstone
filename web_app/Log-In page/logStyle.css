@@ -1,0 +1,35 @@
+body {
+  background-color: blue;
+  font-family: verdana;
+
+}
+
+.container {
+  margin: auto auto;
+  width: 50vw;
+   height: 50vh;
+   background-color: blue;
+   display: flex;
+}
+
+.login_box {
+  margin: auto auto;
+  background-color: white;
+  padding: 50px 50px 50px 50px;
+  border: 2px ridge black;
+}
+
+.create_New_Account {
+  position: relative;
+  text-align: center;
+}
+
+.centered_button {
+  position: relative;
+  text-align: center;
+}
+
+.ain {
+  position: relative;
+  float: right;
+}
