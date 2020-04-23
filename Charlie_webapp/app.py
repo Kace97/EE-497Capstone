@@ -53,14 +53,14 @@ def template(title = "PILL WEB APP", text = "Home Page"):
 @app.route("/")
 def home():
     templateData = template()
-    return render_template('index.html', **templateData)
+    return render_template('main.html', **templateData)
 
 @app.route("/button2")
 def button2():
     message = "You went to page two"
 
     templateData = template(title='Sign up', text = message)
-    return render_template('signup.html', **templateData)
+    return render_template('pagetwo.html', **templateData)
 
 if __name__ == '__main__':
     webbrowser.open_new("http://127.0.0.1:5000/")
