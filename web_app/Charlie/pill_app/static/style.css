@@ -1,0 +1,132 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;900&display=swap');
+* {
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary: #ddd;
+    --dark: #333;
+    --shadow: 0 1px 5px rgba(104, 104, 104, .8);
+}
+
+html {
+    color: var(--dark);
+    box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
+}
+
+body {
+    background: #FEFEFE;
+    margin: 30px 50px;
+    line-height: 1.4;
+}
+
+.nav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #9F9F9F;
+    opacity: .9;
+    padding-top: 60px;
+    transition: .5s;
+    overflow-x: hidden;
+}
+
+.nav ul {
+    padding: 0;
+}
+
+    .nav li:hover {
+        border-left: 9px solid lightskyblue;
+        background-color: #34383d;
+    }
+
+    .nav a {
+        display: block;
+        padding: 20px 30px;
+        color: #000000;
+        text-decoration: none;
+        font-size: 25px;
+    }
+
+.nav a:hover {
+    color: #fff;
+    transition: .5s;
+}
+.nav .close {
+    position: absolute;
+    top: 0;
+    padding: 20px;
+    font-size: 30px;
+}
+
+.slide a {
+    font-size: 36px;
+    color: #2d3135;
+}
+
+#content {
+    transition: margin-left .5s;
+    width: 100%;
+}
+
+.boxes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-gap: 10px;
+    text-decoration: none;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+.box {
+
+    text-align: center;
+    padding: 1.5rem 2rem;
+    box-shadow: var(--shadow);
+    background-color: lightskyblue;
+
+}
+.boxes a {
+    text-decoration: none;
+    color: #000;
+}
+    .boxes a:hover {
+        color: #fff;
+        transition: .5s;
+        text-decoration: none;
+    }
+.box:hover {
+    background-color: #41B6FF;
+
+}
+
+.loader {
+    border: 16px solid #f3f3f3; /* Light grey */
+    border-top: 16px solid lightskyblue; /* Blue */
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+    animation: spin 2s linear infinite;
+    margin: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    position: fixed;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
