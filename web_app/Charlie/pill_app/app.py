@@ -1,26 +1,50 @@
-from flask import Flask, render_template, redirect, url_for, send_file, render_template_string
-import datetime
+from flask import Flask, render_template, redirect, url_for, send_file, render_template_string, request
+from datetime import datetime, timedelta
+from flask_mail import Message
+from flask_mail import Mail
 import webbrowser
 #import CompiledCode as cc
-import os
 import time
+import csv
 
-STATIC_DIR = os.path.abspath('/templates')
-app = Flask(__name__, static_folder=STATIC_DIR)
+app = Flask(__name__)
+mail = Mail(app)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 # Set up title, headers, etc for home page
-def template(title = "PILL WEB APP", text = "Home Page"):
-    now = datetime.datetime.now()
-    timeString = now.strftime("%I:%M:%S %p")
-    dateString = now.strftime("%A, %B %-d, %Y")
+def template(title = "pill web app", text = "Home Page"):
+    now = datetime.now()
+    timeString = now.strftime("%-I:%M %p")
+    day = now.strftime("%A")
+    dateString = now.strftime("%B %-d, %Y")
     templateData = {
         'title' : title,
         'time' : timeString,
+        'day' : day,
         'text' : text,
         'date' : dateString
         }
     return templateData
 
+def reminder(title):
+    now = datetime.now()
+    timeString = now.strftime("%-I:%M %p")
+    day = now.strftime("%A")
+    dateString = now.strftime("%B %-d, %Y")
+    
+    tomorrow = datetime.now() + timedelta(days = 1)
+    tomorrow = tomorrow.strftime("%B %-d, %Y")
+    scheduled_time = str("9:00 am")
+    
+    templateData = {
+        'title' : title,
+        'time' : timeString,
+        'day' : day,
+        'date' : dateString,
+        'next_day' : tomorrow,
+        'schd_t' : scheduled_time
+        }
+    return templateData
 # Set home page
 @app.route("/")
 def home():
@@ -29,20 +53,112 @@ def home():
 
 @app.route("/takeMeds")
 def runDispenser():
-    templateData = template(text = "results")
     return render_template('loading_page.html')
 
 @app.route("/results")
 def results():
-    return render_template("main.html")
+    templateData = reminder("Verification")
+    return render_template('results.html', **templateData)
+
+@app.route("/contact")
+def contact():
+    templateData = template()
+    return render_template('contact.html', **templateData)
+
+@app.route("/lit_photo")
+def light_photo():
+    path = 'lit_photo.jpg'
+    return send_file(path)
+
+#Steve's processing pages
+@app.route("/processing")
+def processing_home():
+    templateData = template()
+    return render_template('pillprocessing.html', **templateData)
+
+@app.route("/homebutton")
+def home_back():
+    templateData = template()
+    return render_template('pillprocessing.html', **templateData)
+
+@app.route("/handle_data", methods=['POST'])
+def handle_data():
+    name = request.form['name']
+    email = request.form['email']
+    message = request.form['message']
+    print(name)
+    print(email)
+    print(message)
+    #msg = Message(message, sender=(name, email),recipients=["charliefisher11@icloud.com"])
+    #mail.send(msg)
+    return render_template('sent_email.html')
+
+def list_csv():
+    output = []
+    header = []
+    with open('medication_list.csv', 'r') as f:
+        reader = csv.reader(f, delimiter=',')
+        k = 0
+        for row in reader:
+            if k == 0:
+                header.append(row)
+                k = k + 1
+            else:
+                output.append(row)
+        return output,header
+
+
+    
+@app.route("/list")
+def list():
+    templateData = template("Prescription List")
+    output,header = list_csv()
+    return render_template('medication_list.html', output = output, header = header, **templateData)
+ 
+
 """
 @app.route("/scanpill")
 def scan():
-    render_template('loading_page.html')
     num_pills = cc.scan_pill()
     message = "Found " + str(num_pills) + " pill(s)"
     templateData = template(text = message)
-    return render_template('loading_page.html', **templateData)
+    return render_template('main.html', **templateData)
+    
+@app.route("/picsonly")
+def pics():
+    num_pills = cc.pics_only()
+    message = "Found " + str(num_pills) + " pill(s)"
+    templateData = template(text = message)
+    return render_template('main.html', **templateData)
+    
+@app.route("/analyze")
+def run_analysis():
+    a, pill_index = cc.analysis(True)
+    message = "Analyzed pill #" + str(pill_index-1)
+    templateData = template(text = message)
+    return render_template('main.html', **templateData)
+    
+@app.route("/databasematch")
+def find_match():
+   
+    cc.finalize_database()
+    
+    message, pi = cc.analysis(False)
+    templateData = template(text = "This is pill #" + str(message))
+    return render_template('main.html', **templateData)
+
+@app.route("/finalpill")
+def show_pill():
+    path = cc.get_path()
+    return send_file(path)
+    
+@app.route("/qrimage")
+def show_qr():
+    path = 'images/qr_code.jpg'
+    return send_file(path)
+
+
+
 """
 if __name__ == '__main__':
     webbrowser.open_new("http://127.0.0.1:5000/")

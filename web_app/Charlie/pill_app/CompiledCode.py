@@ -3,8 +3,8 @@ import time
 import serial
 from time import sleep
 #import pill_analyzer as pa
-import pill_segmenter as ps
-from picamera import PiCamera
+#import pill_segmenter as ps
+#from picamera import PiCamera
 import cv2
 
 
@@ -31,7 +31,8 @@ def readByte(sentence, ser):
 
 def takePhotos(ser): # takes photos of next day's pills
         # backlight photo
-        readByte("backlight on", ser) 
+        readByte("backlight on", ser)
+        '''
         with PiCamera() as camera:
                 camera.resolution=(3280,2464)
                 print("Taking contour photo")
@@ -47,6 +48,7 @@ def takePhotos(ser): # takes photos of next day's pills
                 print("took front photo")
                 # send confirmation
                 sendByte("took front photo", ser)
+        
 
 def segmentation():
         seg.original_image = cv2.imread('rpi_photo.jpg')
@@ -61,7 +63,7 @@ def analysis(num_pills):
         for i in range(num_pills):
                 enc = an.encode_pill('images/lit_pill' + str(i) + '.jpg')
                 print("Encoding:", enc)
-        
+'''      
 def scan_pill():
         time.sleep(3) # need a delay to send first byte
         sendByte("on", ser)
