@@ -6,6 +6,8 @@ import webbrowser
 #import CompiledCode as cc
 import time
 import csv
+import numpy as np
+
 
 app = Flask(__name__)
 mail = Mail(app)
@@ -95,26 +97,47 @@ def handle_data():
 
 def list_csv():
     output = []
-    header = []
     with open('medication_list.csv', 'r') as f:
         reader = csv.reader(f, delimiter=',')
-        k = 0
         for row in reader:
-            if k == 0:
-                header.append(row)
-                k = k + 1
-            else:
-                output.append(row)
-        return output,header
+            output.append(row)
+        return output
 
 
     
 @app.route("/list")
 def list():
     templateData = template("Prescription List")
-    output,header = list_csv()
-    return render_template('medication_list.html', output = output, header = header, **templateData)
- 
+    output = list_csv()
+    return render_template('medication_list.html', output = output, **templateData)
+
+@app.route("/addmeds")
+def addmeds():
+    templateData = template("Add Medication")
+    output = list_csv()
+    return render_template('add_meds.html', output=output, **templateData)
+
+@app.route("/addnewmeds", methods = ['POST'])
+def newMeds():
+    meds = request.form['meds']
+    dose = str(request.form['dose'])
+    dose_units = request.form['dose units']
+    dose = dose + dose_units
+    freq = request.form['freq'] +'\n'
+    new_meds = [meds, dose, freq]
+    output = list_csv()
+    duplicate = False 
+    for row in output:
+        if (np.array_equal(row, new_meds)):
+            duplicate = True
+            # user typed in same meds return an error
+    if not duplicate:
+        with open('medication_list.csv','a', newline = '') as f:
+            writer=csv.writer(f)
+            writer.writerow(new_meds)
+    templateData = template("Add Medication")
+    new_output = list_csv()
+    return render_template('add_meds.html', output=new_output, **templateData)
 
 """
 @app.route("/scanpill")
