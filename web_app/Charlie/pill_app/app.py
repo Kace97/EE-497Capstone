@@ -8,10 +8,10 @@ import time
 import csv
 import numpy as np
 
-
 app = Flask(__name__)
 mail = Mail(app)
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
 
 # Set up title, headers, etc for home page
 def template(title = "pill web app", text = "Home Page"):
@@ -28,7 +28,7 @@ def template(title = "pill web app", text = "Home Page"):
         }
     return templateData
 
-def reminder(title):
+def verification(title):
     now = datetime.now()
     timeString = now.strftime("%-I:%M %p")
     day = now.strftime("%A")
@@ -59,7 +59,7 @@ def runDispenser():
 
 @app.route("/results")
 def results():
-    templateData = reminder("Verification")
+    templateData = verification("Verification")
     return render_template('results.html', **templateData)
 
 @app.route("/contact")
@@ -183,8 +183,11 @@ def show_qr():
 
 
 """
+
 if __name__ == '__main__':
     webbrowser.open_new("http://127.0.0.1:5000/")
     app.run(debug=True, host='0.0.0.0')
+
+
 
  

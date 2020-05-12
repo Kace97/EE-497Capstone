@@ -27,7 +27,7 @@ body {
     
 }
 .wrapper {
-    margin: 30px 50px;
+    margin: 15px 40px;
 }
 .logo {
     display: inline-grid;
@@ -112,9 +112,10 @@ body {
     grid-template-rows: 1fr 1fr;
     grid-gap: 10px;
     text-decoration: none;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    
+    padding-top: 5px;
+    padding-bottom: 5px;
+    align-content: center;
+    justify-content: center;
 }
     .main_boxes a {
         text-decoration: none;
@@ -128,13 +129,13 @@ body {
         .box:hover {
             background-color: #75a9d9;
         }
-    .box {
-        text-align: center;
-        padding: 1.5rem 2rem;
-        box-shadow: var(--shadow);
-        background-color: var(--blue);
-        text-decoration: none;
-    }
+.box {
+    text-align: center;
+    padding: 1rem 1rem;
+    box-shadow: var(--shadow);
+    background-color: var(--blue);
+    text-decoration: none;
+}
 
 /* loading page */
 .loader {
@@ -257,10 +258,9 @@ table {
     grid-template-columns: 1fr;
     grid-gap: 10px;
     text-decoration: none;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    padding-left: 25%;
-    padding-right: 25%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
 }
 
     .top_box a {
