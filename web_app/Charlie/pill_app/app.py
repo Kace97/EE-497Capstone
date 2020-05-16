@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from flask_mail import Message
 from flask_mail import Mail
 import webbrowser
-import CompiledCode as cc
+#import CompiledCode as cc
 import time
 import csv
 import numpy as np
@@ -95,9 +95,9 @@ def handle_data():
     #mail.send(msg)
     return render_template('sent_email.html')
 
-def list_csv():
+def list_csv(csvfile):
     output = []
-    with open('medication_list.csv', 'r') as f:
+    with open(csvfile, 'r') as f:
         reader = csv.reader(f, delimiter=',')
         for row in reader:
             output.append(row)
@@ -108,16 +108,16 @@ def list_csv():
 @app.route("/list")
 def list():
     templateData = template("Prescription List")
-    output = list_csv()
+    output = list_csv("medication_list.csv")
     return render_template('medication_list.html', output = output, **templateData)
 
-@app.route("/addmeds")
+@app.route("/addMeds")
 def addmeds():
     templateData = template("Add Medication")
-    output = list_csv()
+    output = list_csv("medication_list.csv")
     return render_template('add_meds.html', output=output, **templateData)
 
-@app.route("/addnewmeds", methods = ['POST'])
+@app.route("/addNewMeds", methods = ['POST'])
 def newMeds():
     meds = request.form['meds']
     dose = str(request.form['dose'])
@@ -125,7 +125,7 @@ def newMeds():
     dose = dose + dose_units
     freq = request.form['freq'] +'\n'
     new_meds = [meds, dose, freq]
-    output = list_csv()
+    output = list_csv("medication_list.csv")
     duplicate = False 
     for row in output:
         if (np.array_equal(row, new_meds)):
@@ -136,54 +136,34 @@ def newMeds():
             writer=csv.writer(f)
             writer.writerow(new_meds)
     templateData = template("Add Medication")
-    new_output = list_csv()
+    new_output = list_csv("medication_list.csv")
     return render_template('add_meds.html', output=new_output, **templateData)
 
-"""
-@app.route("/scanpill")
-def scan():
-    num_pills = cc.scan_pill()
-    message = "Found " + str(num_pills) + " pill(s)"
-    templateData = template(text = message)
-    return render_template('main.html', **templateData)
-    
-@app.route("/picsonly")
-def pics():
-    num_pills = cc.pics_only()
-    message = "Found " + str(num_pills) + " pill(s)"
-    templateData = template(text = message)
-    return render_template('main.html', **templateData)
-    
-@app.route("/analyze")
-def run_analysis():
-    a, pill_index = cc.analysis(True)
-    message = "Analyzed pill #" + str(pill_index-1)
-    templateData = template(text = message)
-    return render_template('main.html', **templateData)
-    
-@app.route("/databasematch")
-def find_match():
-   
-    cc.finalize_database()
-    
-    message, pi = cc.analysis(False)
-    templateData = template(text = "This is pill #" + str(message))
-    return render_template('main.html', **templateData)
+@app.route("/newUser")
+def newUser():
+    templateData = template("Sign Up")
+    return render_template('newUser.html', **templateData)
 
-@app.route("/finalpill")
-def show_pill():
-    path = cc.get_path()
-    return send_file(path)
-    
-@app.route("/qrimage")
-def show_qr():
-    path = 'images/qr_code.jpg'
-    return send_file(path)
-
-
-
-"""
-
+@app.route("/addNewUser", methods = ['POST'])
+def addNewUser():
+    templateData = template("Welcome")
+    firstName = request.form['firstName']
+    lastName = request.form['lastName']
+    phone = request.form['phone']
+    docName = request.form['docName']
+    docPhone = request.form['docPhone']
+    output = list_csv("user_list.csv")
+    info = [firstName, lastName, phone, docName, docPhone]
+    duplicate = False 
+    for row in output:
+        if (np.array_equal(row, info)):
+            duplicate = True
+            # user typed in same meds return an error
+    if not duplicate:
+        with open('user_list.csv','a', newline = '') as f:
+            writer=csv.writer(f)
+            writer.writerow(info)
+    return render_template('confirmSignUp.html', **templateData)
 if __name__ == '__main__':
     webbrowser.open_new("http://127.0.0.1:5000/")
     app.run(debug=True, host='0.0.0.0')

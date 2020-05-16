@@ -6,7 +6,8 @@
     <script src="https://kit.fontawesome.com/004f417883.js" crossorigin="anonymous"></script>
     <link href="{{ url_for('static', filename='/style.css') }}" rel="stylesheet">
 
-    <script type="text/javascript">function openSlideMenu() {
+    <script type="text/javascript">
+        function openSlideMenu() {
             document.getElementById('menu').style.width = '250px';
             document.getElementById('content').style.marginLeft = '250px';
         }
@@ -32,19 +33,19 @@
         }
     </script>
 
-    
+
 </head>
 
 
 <body>
     <div id="content">
 
-            <a href="#" onclick="openSlideMenu()">
-                <span class="slide">
+        <a href="#" onclick="openSlideMenu()">
+            <span class="slide">
 
-                    <i class="fas fa-bars fa-2x"></i>
-                </span>
-            </a>
+                <i class="fas fa-bars fa-2x"></i>
+            </span>
+        </a>
         <span class="logo">
             <a href="/">
                 <h1>{{title}}</h1>
@@ -67,32 +68,17 @@
             <font size="+5">{{time}}</font>
             <h2>{{day}}</h2>
             <h2>{{date}}</h2>
-            <br />
 
-            <center> <h1>This is your current medication list:</h1></center>
-            <table>
-                <tr>
-                    <th>Medication</th>
-                    <th>Dosage</th>
-                    <th>Frequency</th>
-                </tr>
-                {% for i in output %}
-                <tr>
-                    {% for j in i %}
-                    <td>{{j}}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </table>
-            <br />
+            <center> <h1>Confirmed! Thank you for joining.</h1> </center>
+            </br>
             <div id="confirmAdd">
-                <center> <h2>Would you like to add additional medications?</h2></center>
+                <center> <h2>Would you like to add medications now?</h2></center>
                 <center>
-                    <a href="#" onclick="toggleAddMeds()" class="buttons">Ok</a>
-                    <a href="/" class="buttons" style="background-color:#9FC3E5">Cancel</a>
+                    <a href="#" onclick="toggleAddMeds()" class="buttons">Yes</a>
+                    <a href="/" class="buttons" style="background-color:#9FC3E5">Add Later</a>
                 </center>
             </div>
-
+ 
             <div class="form-meds" id="addNewMeds" style="display:none">
                 <form action="addNewMeds" method="post">
                     <p>Prescription Name: </p>
@@ -119,6 +105,7 @@
                 </form>
             </div>
         </div>
+
     </div>
 
 </body>
