@@ -1,57 +1,105 @@
-#!/usr/bin/env python
 import cv2
 import numpy as np
-from time import sleep
 from pylibdmtx import pylibdmtx
-import keras
-from keras.models import Model, load_model
-from keras.layers import GlobalAveragePooling2D
+import torch
+from torch import nn
+from torchvision import transforms
+from torch.autograd import Variable
+import matplotlib.pyplot as plt
 import time
 import Cartesian2Polar
+import CNNModel1
 from PIL import Image
+import pickle
+import json_writer as jw
+from sklearn.neighbors import NearestNeighbors
+
 
 
 class PillAnalyzer:
     def __init__(self):
-	    self.qr_image = None
-	    self.encoder = self.load_model()
-		
+        self.qr_image = None
+        self.encoder = self.load_model()
+        self.target_image_size = (64,128)
+        self.transform = transforms.Compose([transforms.Resize(self.target_image_size),
+                                            transforms.Grayscale(),
+                                        transforms.ToTensor()])
+        self.image_encoding_dict = {}
+        self.image_filename_dict = {}
+        self.database = []
+        self.pill_index = 0
+        self.nbrs = None
+        self.database_created = False
+        self.DB = 'json/pillDB.json'
+    
     def decode_qr(self):
-	    dec = pylibdmtx.decode(self.qr_image)
-	    return dec
+        dec = pylibdmtx.decode(self.qr_image)
+        return dec
 	    
-    def load_model(self, model_name='models/borg_keras.h5'):
-	    print("Loading model")
-	    t0 = time.time()
-	    autoencoder = load_model(model_name)
-	    encoder = Model(inputs=autoencoder.input, outputs=autoencoder.get_layer('encoder').output)
-	    t1 = time.time()
-	    print("Model loaded in: ", t1-t0)
-	    enc_model = Model(autoencoder.input, autoencoder.get_layer('encoder').output)
-	    x1 = enc_model.get_layer('encoder').output
-	    x1 = GlobalAveragePooling2D(name='flat')(x1)
-	    encoder = Model(enc_model.input, x1)
-	    return encoder
+    def load_model(self, model_name='models/state_dict1.pt'):
+        print("Loading model")
+        t0 = time.time()
+        model = CNNModel1.CNN()
+        model.load_state_dict(torch.load(model_name))
+        model.eval()	
+        t1 = time.time()
+        print("Model loaded in: ", t1-t0)
+        return model
+		
+    def get_encoding_from_src(self, src):
+        return self.encode(self.convert_for_encoding(self.flatten(src)), self.encoder)
+		
+    def flatten(self, src):
+        im = Image.open(src)
+        im = im.resize((222,225))
+        pim = Cartesian2Polar.project_cartesian_image_into_polar_image(im, origin=None)
+        crop_height=min(150,pim.height)
+        crop_width=min(10000,pim.width)
+        cropped_polar_im = pim.crop(box=(0,0,crop_width,crop_height))
+        return cropped_polar_im
 	
-    def expand_for_encoding(self, img):
-	    single = cv2.resize(img, (128,64))
-	    single = np.expand_dims(single, axis=2)
-	    single_scaled = single * 1. / 255
-	    single_scaled = np.expand_dims(single_scaled, axis=0)
-	    return single_scaled
+    def convert_for_encoding(self, img):
+        image = self.transform(img).float() # use the same transform as the test/train data
+        image = Variable(image, requires_grad=True)
+        image = image.unsqueeze(0) # necessary for the model to analyze the image
+        return image
 	
-    def encode_pill(self, src):
-	    im = Image.open(src)
-	    pim = Cartesian2Polar.project_cartesian_image_into_polar_image(im, origin=None)
-
-	    crop_height = min(150, pim.height)
-	    crop_width = min(10000, pim.width)
-	    cropped_polar_im = pim.crop(box=(0,0,crop_width,crop_height))
-
-	    open_cv_image = np.array(cropped_polar_im)
-	    open_cv_image = open_cv_image[:,:,::-1].copy()
-	    img = cv2.cvtColor(open_cv_image, cv2.COLOR_BGR2GRAY)
-
-	    img = self.expand_for_encoding(img)
-	    encoding = self.encoder.predict(img, batch_size=1)
-	    return encoding
+    def encode(self, img, trained_model):
+        d,e = trained_model(img)
+        a = nn.AvgPool2d((8,16))(e)
+        a = a.squeeze()
+        npa = a.detach().numpy()
+        return npa
+        
+    def add_to_dict(self, enc):
+        res = jw.write_to_file(self.pill_index, self.DB, enc)
+            
+        #self.image_encoding_dict[self.pill_index] = enc
+        return res
+        
+    def database_from_dict(self):
+        i = 0
+        data = jw.prep_file('json/pillDB.json')
+        self.database = []
+        for pill in data:
+            pillid = pill["Pill Number"]
+            code = pill["Code"]
+            self.image_encoding_dict[pillid] = code
+        
+        for key, value in self.image_encoding_dict.items():
+            self.image_filename_dict[i] = key
+            self.database.append(value)
+            i = i+1
+            
+    def create_knn(self):
+        self.nbrs = NearestNeighbors(n_neighbors=2, metric='manhattan').fit(self.database)
+        self.database_created = True
+        
+    def get_database_match(self, enc):
+        enc = np.expand_dims(enc, axis=0)
+        dist, ind = self.nbrs.kneighbors(enc)
+        guess = ind[0,0]
+        a = self.image_filename_dict[guess]
+        return a, dist[0][0]
+        
+    

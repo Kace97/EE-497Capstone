@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from picamera import PiCamera
 from time import sleep
+import math
 
 def take_pictures(time_to_pause):
 	with PiCamera() as camera:
@@ -43,7 +44,7 @@ class PillSegmenter:
 		for contour in cs:
 			approx = cv2.approxPolyDP(contour,0.01*cv2.arcLength(contour,True),True)
 			area = cv2.contourArea(contour)
-			if ((len(approx) > self.circle_thresh) & (area > 5000) & (area < 180000) ):
+			if ((len(approx) > self.circle_thresh) & (area > 10000) & (area < 300000) ):
 				contour_list.append(contour)
                 
 		if self.debug_mode:
@@ -78,30 +79,49 @@ class PillSegmenter:
 	def crop_circle(self, img, i, lit_img):
 		gray = cv2.cvtColor(img.copy(), cv2.COLOR_BGR2GRAY)
 
-		circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,1,60,
-			param1=80,param2=25,minRadius=0,maxRadius=0)
+		circles = cv2.HoughCircles(gray,cv2.HOUGH_GRADIENT,1,400,
+			param1=51,param2=30,minRadius=0,maxRadius=0)
 		mask = np.zeros(img.shape[:3], np.uint8)
-		cv2.circle(mask,(circles[0,0,0],circles[0,0,1]),int(circles[0,0,2]),(255,255,255),-1)
+		x = circles[0,0,0]
+		y = circles[0,0,1]
+		r = circles[0,0,2]
+		
+		cv2.circle(mask,(x,y),int(r),(255,255,255),-1)
+		xs = int(max(math.ceil(x-r), 0))
+		xe = int(max(math.ceil(x+r), img.shape[0]))
+		ys = int(max(math.ceil(y-r), 0))
+		ye = int(max(math.ceil(y+r), img.shape[1]))
 
 		mask_inv = cv2.bitwise_not(mask)
 		out = cv2.add(img, mask_inv)
 		lit_out = cv2.add(lit_img, mask_inv)
-		cv2.imwrite(self.save_folder+'/finalviacirclecrop'+str(i)+'.jpg', out)
-		cv2.imwrite(self.save_folder+'/lit_pill'+str(i)+'.jpg', lit_out)
+		f1 = out[ys:ye, xs:xe]
+		f2 = lit_out[ys:ye, xs:xe]
+		cv2.imwrite(self.save_folder+'/finalviacirclecrop'+str(i)+'.jpg', f1)
+		cv2.imwrite(self.save_folder+'/lit_pill'+str(i)+'.jpg', f2)
         
-	def crop_qr(self, thresh, xl=300, xh=600, yl=600, yh=800):
-		quartered = thresh.copy()[yl:yh, xl:xh]
-		og_quart = self.bright_image.copy()[yl:yh, xl:xh]
+	def crop_qr(self, thresh, xl=300, xh=1500, yl=1200, yh=800):
+		og_quart = self.original_image.copy()[1400:, 500:1500]
+		ogg = cv2.cvtColor(og_quart, cv2.COLOR_BGR2GRAY)
+		kernel = np.ones((3,3), np.uint8)
+		__, th = cv2.threshold(ogg, 80, 255, 0)
+		cv2.imwrite(self.save_folder + '/qr_code_thresh.jpg', th)
+		th = cv2.erode(th, kernel, iterations=5)
             
-		contours = cv2.findContours(quartered, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2]
+		contours = cv2.findContours(th, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)[-2]
+		
 		contour_sorted = sorted(contours, key=cv2.contourArea)
 		index = -1
-		while cv2.contourArea(contour_sorted[index]) > 3000:
-			x = contour_sorted[index]
+
+		while cv2.contourArea(contour_sorted[index]) > 10000:
+			c = contour_sorted[index]
+			#cv2.drawContours(og_quart, [c], 0, (0,0,255), 2)
 			index -= 1
             
-		x,y,w,h=self.get_bounding_rect(x)
-		qr_img = og_quart[y-5:y+h+5, x-5:x+w+5]
+		#cv2.imwrite('images/qrconntours.jpg', og_quart)
+
+		x,y,w,h=self.get_bounding_rect(c)
+		qr_img = og_quart[y-30:y+h+30, x-30:x+w+30]
 		cv2.imwrite(self.save_folder + '/qr_code.jpg', qr_img)
             
 
@@ -111,7 +131,7 @@ class PillSegmenter:
 		cv2.imwrite(self.save_folder+'/original_image.jpg', self.original_image)
 #		self.bright_image = self.original_image # DELETE THIS
 		thresh = self.threshold_image()
-#		self.crop_qr(thresh)
+		self.crop_qr(thresh)
 		cs = self.do_contours(thresh)
 		circles_sorted = self.find_circles(cs)
 		index = len(circles_sorted) - 1
