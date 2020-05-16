@@ -139,7 +139,7 @@ def newMeds():
     new_output = list_csv()
     return render_template('add_meds.html', output=new_output, **templateData)
 
-"""
+
 @app.route("/scanpill")
 def scan():
     num_pills = cc.scan_pill()
@@ -182,7 +182,7 @@ def show_qr():
 
 
 
-"""
+
 
 if __name__ == '__main__':
     webbrowser.open_new("http://127.0.0.1:5000/")

@@ -2,20 +2,20 @@ from datetime import datetime
 import time
 import serial
 from time import sleep
-#import pill_analyzer as pa
-#import pill_segmenter as ps
+import pill_analyzer as pa
+import pill_segmenter as ps
 from picamera import PiCamera
-#import cv2
+import cv2
 
 
 ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
 ser.flush()
 # SETUP
 print("Setting up system")
-#seg = ps.PillSegmenter()
-#an = pa.PillAnalyzer()
-#seg.thresh_thresh = 100 #100-170
-#seg.circle_thresh = 8 #11 is default
+seg = ps.PillSegmenter()
+an = pa.PillAnalyzer()
+seg.thresh_thresh = 100 #100-170
+seg.circle_thresh = 8 #11 is default
 print("Finished Setup")
 
 def sendByte(sentence, ser):
@@ -49,7 +49,7 @@ def takePhotos(ser): # takes photos of next day's pills
                 # send confirmation
                 sendByte("took front photo", ser)
 
-'''
+
 def segmentation():
         seg.original_image = cv2.imread('rpi_photo.jpg')
         seg.bright_image = cv2.imread('lit_photo.jpg')
@@ -63,15 +63,15 @@ def analysis(num_pills):
         for i in range(num_pills):
                 enc = an.encode_pill('images/lit_pill' + str(i) + '.jpg')
                 print("Encoding:", enc)
-'''      
+      
 def scan_pill():
         time.sleep(3) # need a delay to send first byte
         sendByte("on", ser)
         print("starting test")
         takePhotos(ser)
         # add Steve's imaging processing stuff here
-        #num_pills = segmentation()
-        # analysis(num_pills)
+        num_pills = segmentation()
+        analysis(num_pills)
         print("done")
         time.sleep(5)
         #return num_pills
@@ -84,8 +84,8 @@ if __name__ == '__main__':
                 print("starting test")
                 takePhotos(ser)
                 # add Steve's imaging processing stuff here
-               # num_pills = segmentation()
-#                analysis(num_pills)
+                num_pills = segmentation()
+                analysis(num_pills)
                 print("done")
                 time.sleep(5)
 

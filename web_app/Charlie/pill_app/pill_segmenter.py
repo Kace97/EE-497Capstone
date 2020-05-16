@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#import cv2
+import cv2
 import numpy as np
 from picamera import PiCamera
 from time import sleep
