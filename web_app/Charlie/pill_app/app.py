@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from flask_mail import Message
 from flask_mail import Mail
 import webbrowser
-#import CompiledCode as cc
+import CompiledCode as cc
 import time
 import csv
 import numpy as np
@@ -139,7 +139,7 @@ def newMeds():
     new_output = list_csv("medication_list.csv")
     return render_template('add_meds.html', output=new_output, **templateData)
 
-<<<<<<< HEAD
+
 @app.route("/newUser")
 def newUser():
     templateData = template("Sign Up")
@@ -165,53 +165,6 @@ def addNewUser():
             writer=csv.writer(f)
             writer.writerow(info)
     return render_template('confirmSignUp.html', **templateData)
-||||||| merged common ancestors
-"""
-@app.route("/scanpill")
-def scan():
-    num_pills = cc.scan_pill()
-    message = "Found " + str(num_pills) + " pill(s)"
-    templateData = template(text = message)
-    return render_template('main.html', **templateData)
-    
-@app.route("/picsonly")
-def pics():
-    num_pills = cc.pics_only()
-    message = "Found " + str(num_pills) + " pill(s)"
-    templateData = template(text = message)
-    return render_template('main.html', **templateData)
-    
-@app.route("/analyze")
-def run_analysis():
-    a, pill_index = cc.analysis(True)
-    message = "Analyzed pill #" + str(pill_index-1)
-    templateData = template(text = message)
-    return render_template('main.html', **templateData)
-    
-@app.route("/databasematch")
-def find_match():
-   
-    cc.finalize_database()
-    
-    message, pi = cc.analysis(False)
-    templateData = template(text = "This is pill #" + str(message))
-    return render_template('main.html', **templateData)
-
-@app.route("/finalpill")
-def show_pill():
-    path = cc.get_path()
-    return send_file(path)
-    
-@app.route("/qrimage")
-def show_qr():
-    path = 'images/qr_code.jpg'
-    return send_file(path)
-
-
-
-"""
-
-=======
 
 @app.route("/scanpill")
 def scan():
@@ -254,10 +207,6 @@ def show_qr():
     return send_file(path)
 
 
-
-
-
->>>>>>> 820e9780a60ba27863b941e95c49ecded4bf0902
 if __name__ == '__main__':
     webbrowser.open_new("http://127.0.0.1:5000/")
     app.run(debug=True, host='0.0.0.0')
