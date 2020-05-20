@@ -10,12 +10,12 @@
 
 #define BACK_LED_PIN 3
 #define FRONT_LED_PIN 2
-#define NUM_LEDS 2
+#define NUM_LEDS 4
 
 
 int gateNum = 0;
 long currLux = 0;
-int PERF_THRESHOLD = 14;
+int PERF_THRESHOLD = 100;
 int lenPack = 2000;
 bool foundPerf = false;
 
@@ -58,7 +58,7 @@ void loop() {
       foundPerf = findPerf();
       
       if (foundPerf) {
-        nextPack(600)
+        nextPack(600);
         turnOnBackLight();
         Serial.println("backlight on");
       } 

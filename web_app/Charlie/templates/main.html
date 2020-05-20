@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<head>
+  <title>PILL WEB APP</title>
+</head>
+
+<body>
+  <h1>{{ title }}</h1>
+  <h2>Current Date: {{ time }}</h2>
+  <h2> {{ text }} </h2>
+  <h2> {{ text2 }} </h2>
+  
+  <br>
+  <form method="POST">
+    <input name="text">
+    <input type="submit">
+  </form>
+  <br>
+  <img src = "/finalpill" alt = "Pill Image">
+  <img src = "/qrimage" alt = "QR Image">
+
+  <br>
+  <a href="/scanpill"><button>Run Motor Forward</button></a>
+  <a href="/picsonly"><button>Image One Pill</button></a>
+  <br>
+  <a href="/analyze"><button>Encode One Pill</button></a>
+  <a href="/databasematch"><button>Run Pill Through Database</button></a>
+  <br>
+  <a href="/button1"><button>Page 1</button></a>
+  <a href="/button2"><button>Page 2</button></a>
+  <br>
+  
+</body>
+</html>
