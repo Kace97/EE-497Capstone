@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr"> <!-- -->
+  <head>
+    <meta charset="utf-8"><!-- -->
+    <title>{{ title }}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css" type="text/css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+	<link href="{{url_for('static', filename='clock.css') }}" rel="stylesheet">
+    <script src="{{url_for('static', filename='js/clock.js') }}"></script>
+
+    <link rel="stylesheet" href="/static/notify.css">
+  </head>
+  <body>
+   <nav>
+      <input type="checkbox" id="check">
+      <label for="check" class="checkbtn">
+        <i class="fas fa-bars"></i>
+      </label>
+      <label class="logo">{{ title }}</label>
+      <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a class="active" href="/reminder">Reminder</a></li>
+      <li><a href="/control">Control</a></li>
+      <li><a href="#">Feedback</a></li>
+      </ul>
+   </nav>
+
+   <section>
+       <br>
+     <!-- [CURRENT TIME] -->
+    <div id="ctime">
+      <h1 class="header">THE CURRENT TIME</h1>
+      <div class="square">
+        <div class="digits" id="chr">00</div>
+        <div class="text">HR</div>
+      </div>
+      <div class="square">
+        <div class="digits" id="cmin">00</div>
+        <div class="text">MIN</div>
+      </div>
+      <div class="square">
+        <div class="digits" id="csec">00</div>
+        <div class="text">SEC</div>
+      </div>
+    </div>
+
+    <!-- [SET ALARM] -->
+    <div id="tpick">
+      <h1 class="header">
+        SET ALARM
+      </h1>
+      <div id="tpick-h"></div>
+      <div id="tpick-m"></div>
+      <div id="tpick-s"></div>
+      <div>
+        <input type="button" value="Set" id="tset"/>
+          <!-- Notification-->
+        <input type="button" value="Reset" id="treset" onclick="pop()" disabled/>
+          <div id="box">
+              <span class="ion-checkmark-round"></span>
+              <h1>Time to Take Pills!</h1>
+
+        <a onclick="pop()" class="close">Close</a>
+      </div>
+      </div>
+    </div>
+
+    <!-- [ALARM SOUND] -->
+    <audio id="alarm-sound" loop>
+      <source src="\static\sources\wake-up-sound.mp3" type="audio/mp3">
+    </audio>
+   </section>
+
+  </body>
+</html>

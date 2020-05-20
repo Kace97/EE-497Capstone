@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ title }}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css" type="text/css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+
+    <link rel="stylesheet" href='/static/control.css'/>
+
+  </head>
+  <body>
+    <nav>
+      <input type="checkbox" id="check">
+      <label for="check" class="checkbtn">
+        <i class="fas fa-bars"></i>
+      </label>
+      <label class="logo">{{ title }}</label>
+      <ul>
+      <li><a href="/">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="/reminder">Reminder</a></li>
+      <li><a class="active"  href="/control">Control</a></li>
+      <li><a href="#">Feedback</a></li>
+      </ul>
+    </nav>
+
+    <section>
+        <h1>Click to Deliver Your Pills</h1>
+
+		<br>
+		<h3>
+			GRN LED Ctrl ==>
+			<a href="/ledGrn/on" class="button">TURN ON</a>
+			<a href="/ledGrn/off"class="button">TURN OFF</a>
+		</h3>
+    </section>
+  </body>
+</html>
