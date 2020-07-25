@@ -14,27 +14,18 @@ void setup() {
   pinMode(STEPPER_FRONT_IN2, OUTPUT);
   pinMode(STEPPER_FRONT_IN3, OUTPUT);
   pinMode(STEPPER_FRONT_IN4, OUTPUT);
-  pinMode(STEPPER_BACK_IN1, OUTPUT);
-  pinMode(STEPPER_BACK_IN2, OUTPUT);
-  pinMode(STEPPER_BACK_IN3, OUTPUT);
-  pinMode(STEPPER_BACK_IN4, OUTPUT);
-
 }
 
 void loop() {
-  for(int i = 0; i < 4000;i++){
+  for(int i = 0; i < 15973;i++){
     OneStep(true);
   }
-  delay(500);
-  for(int i = 0; i < 6000;i++){
-    OneStep(true);
-  }
-  delay(1000);
+  delay(20000);
 }
 
 
 void OneStep(bool dir){
-  delay(5);
+  delay(10);
   if(dir){
     switch(stepNum){
         case 0:
